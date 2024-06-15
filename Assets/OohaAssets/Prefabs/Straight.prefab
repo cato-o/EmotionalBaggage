@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5726498178971717387}
   - component: {fileID: 5680116188410879156}
   - component: {fileID: 7859742000213358136}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,6 +394,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b1c37f08e170c4a9b9d8639c5e8b7507, type: 3}
       propertyPath: m_Name
       value: SM_ConveyorBelt_Straight_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b1c37f08e170c4a9b9d8639c5e8b7507, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
