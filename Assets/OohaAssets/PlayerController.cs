@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +27,11 @@ public class PlayerController : MonoBehaviour
     private LayerMask groundLayer;
     [SerializeField]
     private LayerMask turnLayer;
+    [SerializeField]
+    private Animator animator;
+
+    [SerializeField]
+    private AnimationClip slideAnimationClip;
     private float gravity;
     private float playerSpeed;
     private Vector3 movementDirection = Vector3.forward;
@@ -37,14 +43,20 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController controller;
 
+    private int slidingAnimationId;
+    private bool sliding = false;
+
     [SerializeField]
     private UnityEvent<Vector3> turnEvent;
 
-     private Vector3? lastTurnTilePosition = null;
+    private Vector3? lastTurnTilePosition = null;
 
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController>();
+
+        slidingAnimationId = Animator.StringToHash("Sliding");
+
         turnAction = playerInput.actions["Turn"];
         jumpAction = playerInput.actions["Jump"];
         slideAction = playerInput.actions["Slide"];
@@ -109,9 +121,28 @@ public class PlayerController : MonoBehaviour
         movementDirection = transform.forward.normalized;
     }
     private void PlayerSlide(InputAction.CallbackContext context) {
-        
+        if (!sliding && isGrounded()) {
+            StartCoroutine(Slide());
+        }
     }
 
+    private IEnumerator Slide() {
+        sliding = true;
+        // Shrink the collider
+        Vector3 originalControllerCenter = controller.center;
+        Vector3 newControllerCenter = originalControllerCenter;
+        controller.height /= 2;
+        newControllerCenter.y -= controller.height / 2;
+        controller.center = newControllerCenter;
+
+        // Play the sliding animation
+        animator.Play(slidingAnimationId);
+        yield return new WaitForSeconds(slideAnimationClip.length);
+        // Set the character controller back to normal after sliding
+        controller.height *= 2;
+        controller.center = originalControllerCenter;
+        sliding = false;
+    }
     private void PlayerJump(InputAction.CallbackContext context) {
         if (isGrounded()) {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * gravity * -3f);
@@ -144,9 +175,6 @@ public class PlayerController : MonoBehaviour
         Vector3 raycastOriginSecond = raycastOriginFirst;
         raycastOriginFirst += transform.forward * .2f;  
         raycastOriginSecond -= transform.forward * .2f; 
-
-        Debug.DrawLine(raycastOriginFirst, raycastOriginFirst + Vector3.down * length, Color.green, 2f);
-        Debug.DrawLine(raycastOriginSecond, raycastOriginSecond + Vector3.down * length, Color.red, 2f);
 
         if (Physics.Raycast(raycastOriginFirst, Vector3.down, out RaycastHit hit, length, groundLayer) || Physics.Raycast(raycastOriginSecond, Vector3.down, out RaycastHit hit2, length, groundLayer)){
             return true;
