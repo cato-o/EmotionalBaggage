@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     private float playerSpeedIncreaseRate = .1f;
 
     [SerializeField]
+    private float horizontalSpeedMultiplier = 5f;
+
+    [SerializeField]
     private float jumpHeight = 1.0f;
 
     [SerializeField]
@@ -44,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private InputAction turnAction;
     private InputAction jumpAction;
     private InputAction slideAction;
+    private InputAction moveAction;
 
     private CharacterController controller;
 
@@ -52,7 +56,7 @@ public class PlayerController : MonoBehaviour
     private float score = 0;
     private bool isFalling = false;
     private float fallTimer = 0f;
-    private float maxFallTime = 3f;
+    private float maxFallTime = 2f;
 
     [SerializeField]
     private UnityEvent<Vector3> turnEvent;
@@ -71,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
         slidingAnimationId = Animator.StringToHash("Sliding");
 
+        moveAction = playerInput.actions["Move"];
         turnAction = playerInput.actions["Turn"];
         jumpAction = playerInput.actions["Jump"];
         slideAction = playerInput.actions["Slide"];
@@ -78,20 +83,35 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnEnable() {
+        moveAction.performed += PlayerMove;
         turnAction.performed += PlayerTurn;
         slideAction.performed += PlayerSlide;
         jumpAction.performed += PlayerJump;
     }
 
     private void OnDisable() {
+        moveAction.performed -= PlayerMove; 
         turnAction.performed -= PlayerTurn;
         slideAction.performed -= PlayerSlide;
-        jumpAction.performed -= PlayerJump; 
+        jumpAction.performed -= PlayerJump;
     }
 
     private void Start() {
         gravity = initialGravityValue;
         playerSpeed = initialPlayerSpeed;
+    }
+
+    private void PlayerMove(InputAction.CallbackContext context)
+    {
+        Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
+        if (turnBlock.HasValue)
+        {
+            return;
+        }
+
+        float direction = context.ReadValue<float>();
+        Vector3 horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeedMultiplier * playerSpeed * Time.deltaTime;
+        controller.Move(horizontalMove);
     }
 
     private void PlayerTurn(InputAction.CallbackContext context) {
