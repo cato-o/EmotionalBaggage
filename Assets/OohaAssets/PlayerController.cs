@@ -28,10 +28,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask turnLayer;
     [SerializeField]
+    private LayerMask obstacleLayer;
+    [SerializeField]
     private Animator animator;
 
     [SerializeField]
     private AnimationClip slideAnimationClip;
+    [SerializeField]
+    private float scoreMultiplier;
     private float gravity;
     private float playerSpeed;
     private Vector3 movementDirection = Vector3.forward;
@@ -45,9 +49,21 @@ public class PlayerController : MonoBehaviour
 
     private int slidingAnimationId;
     private bool sliding = false;
+    // do i need this score
+    private float score = 0;
+    private bool isFalling = false;
+    private float fallTimer = 0f;
+    private float maxFallTime = 3f;
 
     [SerializeField]
     private UnityEvent<Vector3> turnEvent;
+
+    [SerializeField]
+    private UnityEvent<int> gameOverEvent;
+
+    // and this score functionality
+    [SerializeField]
+    private UnityEvent<int> scoreUpdateEvent;
 
     private Vector3? lastTurnTilePosition = null;
 
@@ -151,6 +167,26 @@ public class PlayerController : MonoBehaviour
     }   
 
     private void Update() {
+        if (!isGrounded(20f)) { // if falling off map, sets off few seconds delay and ends game
+            if (!isFalling) {
+                isFalling = true;
+                fallTimer = 0f;
+            }
+            else {
+                fallTimer += Time.deltaTime;
+                if (fallTimer >= maxFallTime) {
+                    GameOver();
+                    return;
+                }
+            }
+        }
+        else {
+            isFalling = false; // Reset falling state if grounded
+        }
+
+        // Score updater
+        score += scoreMultiplier * Time.deltaTime;
+        scoreUpdateEvent.Invoke((int)score);
         controller.Move(transform.forward * playerSpeed * Time.deltaTime);
 
         if (isGrounded() && playerVelocity.y < 0) {
@@ -164,7 +200,6 @@ public class PlayerController : MonoBehaviour
             lastTurnTilePosition = null;
         }
 
-        Debug.Log("Grounded: " + isGrounded());
     }
 
     private bool isGrounded(float length = .2f){
@@ -180,6 +215,18 @@ public class PlayerController : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private void GameOver() {
+        Debug.Log("You missed your flight!");
+        gameOverEvent.Invoke((int)score);
+        gameObject.SetActive(false);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0){
+            GameOver();
+        }
     }
 }
 }
