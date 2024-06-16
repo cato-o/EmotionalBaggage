@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask obstacleLayer;
     [SerializeField]
+    private LayerMask airObstacleLayer;
+    [SerializeField]
     private Animator animator;
 
     [SerializeField]
@@ -147,7 +149,7 @@ public class PlayerController : MonoBehaviour
         // Shrink the collider
         Vector3 originalControllerCenter = controller.center;
         Vector3 newControllerCenter = originalControllerCenter;
-        controller.height /= 2;
+        controller.height /= 10;
         newControllerCenter.y -= controller.height / 2;
         controller.center = newControllerCenter;
 
@@ -155,7 +157,7 @@ public class PlayerController : MonoBehaviour
         animator.Play(slidingAnimationId);
         yield return new WaitForSeconds(slideAnimationClip.length);
         // Set the character controller back to normal after sliding
-        controller.height *= 2;
+        controller.height *= 10;
         controller.center = originalControllerCenter;
         sliding = false;
     }
@@ -224,7 +226,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0){
+        if (sliding) {
+            if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0) {
+            GameOver();
+            }
+        }
+        else if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0 || ((1 << hit.collider.gameObject.layer) & airObstacleLayer) != 0) {
             GameOver();
         }
     }
