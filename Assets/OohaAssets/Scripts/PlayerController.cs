@@ -36,8 +36,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private AnimationClip slideAnimationClip;
-    [SerializeField]
-    private float scoreMultiplier;
     private float gravity;
     private float playerSpeed;
     private Vector3 movementDirection = Vector3.forward;
@@ -51,7 +49,6 @@ public class PlayerController : MonoBehaviour
 
     private int slidingAnimationId;
     private bool sliding = false;
-    // do i need this score
     private float score = 0;
     private bool isFalling = false;
     private float fallTimer = 0f;
@@ -63,7 +60,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private UnityEvent<int> gameOverEvent;
 
-    // and this score functionality
     [SerializeField]
     private UnityEvent<int> scoreUpdateEvent;
 
@@ -149,7 +145,7 @@ public class PlayerController : MonoBehaviour
         // Shrink the collider
         Vector3 originalControllerCenter = controller.center;
         Vector3 newControllerCenter = originalControllerCenter;
-        controller.height /= 10;
+        controller.height /= 2;
         newControllerCenter.y -= controller.height / 2;
         controller.center = newControllerCenter;
 
@@ -157,7 +153,7 @@ public class PlayerController : MonoBehaviour
         animator.Play(slidingAnimationId);
         yield return new WaitForSeconds(slideAnimationClip.length);
         // Set the character controller back to normal after sliding
-        controller.height *= 10;
+        controller.height *= 2;
         controller.center = originalControllerCenter;
         sliding = false;
     }
@@ -169,7 +165,7 @@ public class PlayerController : MonoBehaviour
     }   
 
     private void Update() {
-        if (!isGrounded(20f)) { // if falling off map, sets off few seconds delay and ends game
+        if (!isGrounded(20f)) { 
             if (!isFalling) {
                 isFalling = true;
                 fallTimer = 0f;
@@ -183,12 +179,12 @@ public class PlayerController : MonoBehaviour
             }
         }
         else {
-            isFalling = false; // Reset falling state if grounded
+            isFalling = false; 
         }
 
-        // Score updater
-        score += scoreMultiplier * Time.deltaTime;
+        score += playerSpeed * Time.deltaTime;
         scoreUpdateEvent.Invoke((int)score);
+
         controller.Move(transform.forward * playerSpeed * Time.deltaTime);
 
         if (isGrounded() && playerVelocity.y < 0) {
