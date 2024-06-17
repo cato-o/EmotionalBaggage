@@ -9,7 +9,7 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private int minimumStraightTiles = 3;
     [SerializeField]
-    private int maximumStraightTiles = 15;
+    private int maximumStraightTiles = 10;
     [SerializeField]
     private GameObject startingTile;
     [SerializeField]
@@ -18,7 +18,7 @@ public class TileSpawner : MonoBehaviour
     private List<GameObject> obstacles;
 
     [SerializeField]
-    private float obstacleSpawnFrequency = 0.2f;
+    private float obstacleSpawnFrequency = 0.5f;
 
     [SerializeField]
     private float turnFrequency;
