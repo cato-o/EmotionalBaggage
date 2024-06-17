@@ -19,13 +19,11 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private float maximumPlayerSpeed = 30f;
 
-    [SerializeField]
-    private float playerSpeedIncreaseRate = .1f;
-
-    [SerializeField]
-    private float horizontalSpeedMultiplier = 5f;
         [SerializeField]
         private float playerSpeedIncreaseRate = .1f;
+
+        [SerializeField]
+        private float horizontalSpeedMultiplier = 5f;
 
         [SerializeField]
         private float jumpHeight = 1.0f;
@@ -44,17 +42,6 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private Animator animator;
 
-    [SerializeField]
-    private AnimationClip slideAnimationClip;
-    private float gravity;
-    private float playerSpeed;
-    private Vector3 movementDirection = Vector3.forward;
-    private Vector3 playerVelocity;
-    private PlayerInput playerInput;
-    private InputAction turnAction;
-    private InputAction jumpAction;
-    private InputAction slideAction;
-    private InputAction moveAction;
         [SerializeField]
         private AnimationClip slideAnimationClip;
 
@@ -68,23 +55,17 @@ namespace EmotionalBaggage.Player
         private InputAction turnAction;
         private InputAction jumpAction;
         private InputAction slideAction;
+        private InputAction moveAction;
 
         private CharacterController controller;
 
-    private int slidingAnimationId;
-    private bool sliding = false;
-    private float score = 0;
-    private bool isFalling = false;
-    private float fallTimer = 0f;
-    private float maxFallTime = 2f;
         private int slidingAnimationId;
-
         private int dyingAnimationId;
         private bool sliding = false;
         private float score = 0;
         private bool isFalling = false;
         private float fallTimer = 0f;
-        private float maxFallTime = 3f;
+        private float maxFallTime = 2f;
         private float targetOffsetZ;
         private float offsetTransitionSpeed = 0.7f;
         private bool isGameOver = false;
@@ -108,61 +89,30 @@ namespace EmotionalBaggage.Player
             slidingAnimationId = Animator.StringToHash("Sliding");
             dyingAnimationId = Animator.StringToHash("Dying");
 
-        moveAction = playerInput.actions["Move"];
-        turnAction = playerInput.actions["Turn"];
-        jumpAction = playerInput.actions["Jump"];
-        slideAction = playerInput.actions["Slide"];
-        
-    }
+            moveAction = playerInput.actions["Move"];
             turnAction = playerInput.actions["Turn"];
             jumpAction = playerInput.actions["Jump"];
             slideAction = playerInput.actions["Slide"];
 
         }
 
-    private void OnEnable() {
-        moveAction.performed += PlayerMove;
-        turnAction.performed += PlayerTurn;
-        slideAction.performed += PlayerSlide;
-        jumpAction.performed += PlayerJump;
-    }
         private void OnEnable()
         {
+            moveAction.performed += PlayerMove;
             turnAction.performed += PlayerTurn;
             slideAction.performed += PlayerSlide;
             jumpAction.performed += PlayerJump;
         }
 
-    private void OnDisable() {
-        moveAction.performed -= PlayerMove; 
-        turnAction.performed -= PlayerTurn;
-        slideAction.performed -= PlayerSlide;
-        jumpAction.performed -= PlayerJump;
-    }
+
         private void OnDisable()
         {
+            moveAction.performed -= PlayerMove;
             turnAction.performed -= PlayerTurn;
             slideAction.performed -= PlayerSlide;
             jumpAction.performed -= PlayerJump;
         }
 
-    private void Start() {
-        gravity = initialGravityValue;
-        playerSpeed = initialPlayerSpeed;
-    }
-
-    private void PlayerMove(InputAction.CallbackContext context)
-    {
-        Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
-        if (turnBlock.HasValue)
-        {
-            return;
-        }
-
-        float direction = context.ReadValue<float>();
-        Vector3 horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeedMultiplier * playerSpeed * Time.deltaTime;
-        controller.Move(horizontalMove);
-    }
         private void Start()
         {
             virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
@@ -170,9 +120,24 @@ namespace EmotionalBaggage.Player
             playerSpeed = initialPlayerSpeed;
         }
 
+        private void PlayerMove(InputAction.CallbackContext context)
+        {
+            Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
+            if (turnBlock.HasValue)
+            {
+                return;
+            }
+
+            float direction = context.ReadValue<float>();
+            Vector3 horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeedMultiplier * playerSpeed * Time.deltaTime;
+            controller.Move(horizontalMove);
+        }
+
+
         private void PlayerTurn(InputAction.CallbackContext context)
         {
-            if (!isGameOver){
+            if (!isGameOver)
+            {
                 Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
                 if (!turnPosition.HasValue)
                 {
@@ -221,7 +186,8 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerSlide(InputAction.CallbackContext context)
         {
-            if (!isGameOver){
+            if (!isGameOver)
+            {
                 if (!sliding && isGrounded())
                 {
                     StartCoroutine(Slide());
@@ -249,7 +215,8 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerJump(InputAction.CallbackContext context)
         {
-            if (!isGameOver) {
+            if (!isGameOver)
+            {
                 if (isGrounded())
                 {
                     playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
