@@ -4,29 +4,17 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+
 public class GameOver : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject gameOverCanvas;
 
     [SerializeField] private TextMeshProUGUI scoreText;
 
-    [SerializeField] private TextMeshProUGUI highScoreText;
-
-
-    [SerializeField] private TextMeshProUGUI highScoreNotifier;
-
-    private int highScore = 0; 
     private int score = 0;
 
     public void StopGame(int score) {
-        gameOverCanvas.SetActive(true);
         this.score = score;
-        scoreText.text = score.ToString();
-        
-        if (score > highScore) {
-            highScoreText = scoreText;
-        }
+        scoreText.text = "Distance: " +score.ToString() + "m";
     }
     public void AddXP(int score) {
 
