@@ -489,7 +489,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 209072251}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.070190966, y: -0.000000029728898, z: 0.0000000020918596, w: 0.99753356}
+  m_LocalRotation: {x: 0.070190966, y: 0.000000029728898, z: -0.0000000020918596, w: 0.99753356}
   m_LocalPosition: {x: 0, y: 0.99, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1591,7 +1591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 0, y: 0.99, z: -7}
-  m_XDamping: 2
+  m_XDamping: 0
   m_YDamping: 0.5
   m_ZDamping: 0.5
   m_AngularDampingMode: 0
@@ -1615,7 +1615,7 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0.5
+  m_HorizontalDamping: 0
   m_VerticalDamping: 0.5
   m_ScreenX: 0.5
   m_ScreenY: 0.5
@@ -1743,8 +1743,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 209072252}
   initialPlayerSpeed: 15
-  maximumPlayerSpeed: 30
-  playerSpeedIncreaseRate: 0.1
+  maximumPlayerSpeed: 40
+  playerSpeedIncreaseRate: 0.2
   jumpHeight: 1
   initialGravityValue: -9.81
   groundLayer:
@@ -1760,6 +1760,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   animator: {fileID: 372835304}
+  initialHorizontalSpeed: 2
   slideAnimationClip: {fileID: 7400000, guid: a7bab975660b440a2924f82d8c08450f, type: 2}
   dieAnimationClip: {fileID: 7400000, guid: ec1263daa43594228bc8fe9ffa9b6715, type: 2}
   turnEvent:
@@ -1917,7 +1918,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1718305054}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.070190966, y: -0.000000029728898, z: 0.0000000020918596, w: 0.99753356}
+  m_LocalRotation: {x: 0.070190966, y: 0.000000029728898, z: -0.0000000020918596, w: 0.99753356}
   m_LocalPosition: {x: 0, y: 0.99, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2121,8 +2122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18162cf573cc04e70a3090fb442e4559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileStartCount: 10
-  minimumStraightTiles: 3
+  tileStartCount: 5
+  minimumStraightTiles: 2
   maximumStraightTiles: 10
   startingTile: {fileID: 7270030239991754380, guid: 50a7756a8e2f0f14787d70ef66f51488, type: 3}
   turnTiles:
@@ -2134,7 +2135,7 @@ MonoBehaviour:
   - {fileID: 7602181854675208719, guid: 08ce5558dbbcc49d99b61f68b8ce74ba, type: 3}
   - {fileID: 7602181854675208719, guid: d87e6301b9b8d48629bc726d98634f2a, type: 3}
   obstacleSpawnFrequency: 0.5
-  minimumObstacleSpawnDistance: 0
+  minimumObstacleSpawnDistance: 7
 --- !u!4 &2086418735
 Transform:
   m_ObjectHideFlags: 0

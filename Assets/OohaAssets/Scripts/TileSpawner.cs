@@ -18,10 +18,12 @@ public class TileSpawner : MonoBehaviour
     private List<GameObject> obstacles;
 
     [SerializeField]
-    private float obstacleSpawnFrequency = 0.5f;
-
+    private float obstacleSpawnFrequency;
     [SerializeField]
     private float minimumObstacleSpawnDistance;
+    private float maximumObstacleFrequency = 1f;
+    private float ObstacleSpawnIncreaseRate = 0.01f;
+    private float initialObstacleSpawnFrequency = 0.5f;
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
     private Vector3 lastObstaclePosition;
@@ -33,6 +35,7 @@ public class TileSpawner : MonoBehaviour
     private void Start(){
         currentTiles = new List<GameObject>();
         currentObstacles = new List<GameObject>();
+        obstacleSpawnFrequency = initialObstacleSpawnFrequency;
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -42,6 +45,14 @@ public class TileSpawner : MonoBehaviour
 
         SpawnTile(SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>());
     }
+
+    public void Update(){
+        if (obstacleSpawnFrequency < maximumObstacleFrequency)
+            {
+                obstacleSpawnFrequency += Time.deltaTime * ObstacleSpawnIncreaseRate;
+            }
+    }
+    
     private void SpawnTile(Tile tile, bool spawnObstacle = false) {
 
         Quaternion newTileRotation = tile.gameObject.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
