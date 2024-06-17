@@ -166,8 +166,7 @@ namespace EmotionalBaggage.Player
                     return null;
                 }
                 if ((type == TileType.LEFT && turnValue == -1) ||
-                    (type == TileType.RIGHT && turnValue == 1) ||
-                    (type == TileType.SIDEWAYS))
+                    (type == TileType.RIGHT && turnValue == 1))
                 {
                     lastTurnTilePosition = tilePosition;
                     return tile.pivot.position;

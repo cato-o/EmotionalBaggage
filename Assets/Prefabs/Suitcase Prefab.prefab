@@ -155,6 +155,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a3c531c073b014fe6922cbe8e4399736, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 17a13992f3ce4054fbbec526b88f54a2, type: 2}
     - target: {fileID: 919132149155446097, guid: a3c531c073b014fe6922cbe8e4399736, type: 3}
       propertyPath: m_Name
       value: Suitcase Prefab
