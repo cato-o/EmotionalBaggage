@@ -24,12 +24,23 @@ public class TileSpawner : MonoBehaviour
     private float maximumObstacleFrequency = 1f;
     private float ObstacleSpawnIncreaseRate = 0.01f;
     private float initialObstacleSpawnFrequency = 0.5f;
+
+    private float rampSpawnFrequency = 0.2f;
+
+    //three floor definitons
+    private float floor1YValue = 0f;
+    private float upRampOneToTwoYValue = 1.11f;
+    private float floor2YValue = 2.215f;
+    private float upRampTwoToThreeYValue = 3.33f;
+    private float floor3YValue = 4.445f;
+
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
     private Vector3 lastObstaclePosition;
     private GameObject prevTile;
     private List<GameObject> currentTiles;
     private List<GameObject> currentObstacles;
+
     
 
     private void Start(){
@@ -65,6 +76,7 @@ public class TileSpawner : MonoBehaviour
         if (tile.type == TileType.STRAIGHT) {
             currentTileLocation += Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size, currentTileDirection);
         }
+        
     }
 
     private void DeletePreviousTiles() {   
@@ -86,12 +98,7 @@ public class TileSpawner : MonoBehaviour
         DeletePreviousTiles();
 
         Vector3 tilePlacementScale;
-        if (prevTile.GetComponent<Tile>().type == TileType.SIDEWAYS) {
-            tilePlacementScale = Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size / 2 + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
-        }
-        else {
-            tilePlacementScale = Vector3.Scale((prevTile.GetComponent<Renderer>().bounds.size - (Vector3.one * 2)) + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
-        }
+        tilePlacementScale = Vector3.Scale((prevTile.GetComponent<Renderer>().bounds.size - (Vector3.one * 2)) + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
 
         currentTileLocation += tilePlacementScale;
 
@@ -101,8 +108,16 @@ public class TileSpawner : MonoBehaviour
             SpawnTile(startingTile.GetComponent<Tile>(), (i == 0)? false : true);
         }
 
+       // SecondTileSpawn = 
+
         SpawnTile(SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>(), false);
+
+
     }
+
+    //public bool Clicked() {
+      //  return true;
+    //}
 
     private void SpawnObstacle(){
          if (Random.value > obstacleSpawnFrequency) return;

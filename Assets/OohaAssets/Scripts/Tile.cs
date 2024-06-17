@@ -5,9 +5,10 @@ namespace EmotionalBaggage {
 
 public enum TileType {
     STRAIGHT,
+    UPRAMP,
+    DOWNRAMP,
     LEFT,
-    RIGHT,
-    SIDEWAYS
+    RIGHT
 }
 
 /// <summary>
