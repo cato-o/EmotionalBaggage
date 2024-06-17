@@ -19,13 +19,11 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private float maximumPlayerSpeed = 30f;
 
-    [SerializeField]
-    private float playerSpeedIncreaseRate = .1f;
-
-    [SerializeField]
-    private float horizontalSpeedMultiplier = 5f;
         [SerializeField]
         private float playerSpeedIncreaseRate = .1f;
+
+        [SerializeField]
+        private float horizontalSpeedMultiplier = 5f;
 
         [SerializeField]
         private float jumpHeight = 1.0f;
@@ -43,36 +41,7 @@ namespace EmotionalBaggage.Player
         private LayerMask airObstacleLayer;
         [SerializeField]
         private Animator animator;
-    private float horizontalSpeed = 2f;
-
-    [SerializeField]
-    private float jumpHeight = 1.0f;
-
-    [SerializeField]
-    private float initialGravityValue = -9.81f;
-
-    [SerializeField]
-    private LayerMask groundLayer;
-    [SerializeField]
-    private LayerMask turnLayer;
-    [SerializeField]
-    private LayerMask obstacleLayer;
-    [SerializeField]
-    private LayerMask airObstacleLayer;
-    [SerializeField]
-    private Animator animator;
-
-    [SerializeField]
-    private AnimationClip slideAnimationClip;
-    private float gravity;
-    private float playerSpeed;
-    private Vector3 movementDirection = Vector3.forward;
-    private Vector3 playerVelocity;
-    private PlayerInput playerInput;
-    private InputAction turnAction;
-    private InputAction jumpAction;
-    private InputAction slideAction;
-    private InputAction moveAction;
+        private float horizontalSpeed = 2f;
         [SerializeField]
         private AnimationClip slideAnimationClip;
 
@@ -86,23 +55,17 @@ namespace EmotionalBaggage.Player
         private InputAction turnAction;
         private InputAction jumpAction;
         private InputAction slideAction;
+        private InputAction moveAction;
 
         private CharacterController controller;
 
-    private int slidingAnimationId;
-    private bool sliding = false;
-    private float score = 0;
-    private bool isFalling = false;
-    private float fallTimer = 0f;
-    private float maxFallTime = 2f;
         private int slidingAnimationId;
-
         private int dyingAnimationId;
         private bool sliding = false;
         private float score = 0;
         private bool isFalling = false;
         private float fallTimer = 0f;
-        private float maxFallTime = 3f;
+        private float maxFallTime = 2f;
         private float targetOffsetZ;
         private float offsetTransitionSpeed = 0.7f;
         private bool isGameOver = false;
@@ -117,122 +80,117 @@ namespace EmotionalBaggage.Player
         private UnityEvent<int> scoreUpdateEvent;
 
         private Vector3? lastTurnTilePosition = null;
-    private bool isHorizHeld;
-    private Vector3 horizontalMove;
+        private bool isHorizHeld;
+        private Vector3 horizontalMove;
 
-    private void Awake() {
-        playerInput = GetComponent<PlayerInput>();
-        controller = GetComponent<CharacterController>();
+        private void Awake() {
+            playerInput = GetComponent<PlayerInput>();
+            controller = GetComponent<CharacterController>();
 
-        slidingAnimationId = Animator.StringToHash("Sliding");
-        dyingAnimationId = Animator.StringToHash("Dying");
+            slidingAnimationId = Animator.StringToHash("Sliding");
+            dyingAnimationId = Animator.StringToHash("Dying");
 
-        moveAction = playerInput.actions["Move"];
-        turnAction = playerInput.actions["Turn"];
-        jumpAction = playerInput.actions["Jump"];
-        slideAction = playerInput.actions["Slide"];
-        
-    }
-
-    private void OnEnable() {
-        moveAction.performed += PlayerMove;
-        moveAction.canceled += HorizReleased;
-        turnAction.performed += PlayerTurn;
-        slideAction.performed += PlayerSlide;
-        jumpAction.performed += PlayerJump;
-    }
-
-    private void OnDisable() {
-        moveAction.performed -= PlayerMove; 
-        moveAction.canceled -= HorizReleased;
-        turnAction.performed -= PlayerTurn;
-        slideAction.performed -= PlayerSlide;
-        jumpAction.performed -= PlayerJump;
-    }
-
-
-    private void Start() {
-        gravity = initialGravityValue;
-        playerSpeed = initialPlayerSpeed;
-    }
-
-    private void PlayerMove(InputAction.CallbackContext context)
-    {
-        Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
-        if (turnBlock.HasValue)
-        {
-            return;
+            moveAction = playerInput.actions["Move"];
+            turnAction = playerInput.actions["Turn"];
+            jumpAction = playerInput.actions["Jump"];
+            slideAction = playerInput.actions["Slide"];
+            
         }
 
-        isHorizHeld = true;
-        float direction = context.ReadValue<float>();
-        horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeed * Time.deltaTime;
+        private void OnEnable() {
+            moveAction.performed += PlayerMove;
+            moveAction.canceled += HorizReleased;
+            turnAction.performed += PlayerTurn;
+            slideAction.performed += PlayerSlide;
+            jumpAction.performed += PlayerJump;
+        }
 
-    }
-    private void Start()
-    {
-        virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
-        gravity = initialGravityValue;
-        playerSpeed = initialPlayerSpeed;
-    }
+        private void OnDisable() {
+            moveAction.performed -= PlayerMove; 
+            moveAction.canceled -= HorizReleased;
+            turnAction.performed -= PlayerTurn;
+            slideAction.performed -= PlayerSlide;
+            jumpAction.performed -= PlayerJump;
+        }
 
-    private void HorizReleased(InputAction.CallbackContext context)
-    {
-        isHorizHeld = false;
-    }
-
-    private void PlayerTurn(InputAction.CallbackContext context)
-    {
-        if (!isGameOver){
-            Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
-            if (!turnPosition.HasValue)
+        private void PlayerMove(InputAction.CallbackContext context)
+        {
+            Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
+            if (turnBlock.HasValue)
             {
                 return;
             }
-            Vector3 targetDirection = Quaternion.AngleAxis(90 * context.ReadValue<float>(), Vector3.up) * movementDirection;
-            turnEvent.Invoke(targetDirection);
-            Turn(context.ReadValue<float>(), turnPosition.Value);
-        }
-    }
 
-    private Vector3? CheckTurn(float turnValue)
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, .1f, turnLayer);
-        if (hitColliders.Length != 0)
+            isHorizHeld = true;
+            float direction = context.ReadValue<float>();
+            horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeed * Time.deltaTime;
+
+        }
+        private void Start()
         {
-            Tile tile = hitColliders[0].transform.parent.GetComponent<Tile>();
-            TileType type = tile.type;
-            Vector3 tilePosition = tile.transform.position;
-
-            if (lastTurnTilePosition.HasValue && lastTurnTilePosition.Value == tilePosition)
-            {
-                return null;
-            }
-            if ((type == TileType.LEFT && turnValue == -1) ||
-                (type == TileType.RIGHT && turnValue == 1) ||
-                (type == TileType.SIDEWAYS))
-            {
-                lastTurnTilePosition = tilePosition;
-                return tile.pivot.position;
-            }
+            virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
+            gravity = initialGravityValue;
+            playerSpeed = initialPlayerSpeed;
         }
-        return null;
-    }
 
-    private void Turn(float turnValue, Vector3 turnPosition)
-    {
-        Vector3 tempPlayerPosition = new Vector3(turnPosition.x, transform.position.y, turnPosition.z);
-        controller.enabled = false;
-        transform.position = tempPlayerPosition;
-        controller.enabled = true;
+        private void HorizReleased(InputAction.CallbackContext context)
+        {
+            isHorizHeld = false;
+        }
 
-        Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 90 * turnValue, 0);
-        transform.rotation = targetRotation;
-        movementDirection = transform.forward.normalized;
-    }
-        private void PlayerSlide(InputAction.CallbackContext context)
+        private void PlayerTurn(InputAction.CallbackContext context)
         {
             if (!isGameOver){
+                Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
+                if (!turnPosition.HasValue)
+                {
+                    return;
+                }
+                Vector3 targetDirection = Quaternion.AngleAxis(90 * context.ReadValue<float>(), Vector3.up) * movementDirection;
+                turnEvent.Invoke(targetDirection);
+                Turn(context.ReadValue<float>(), turnPosition.Value);
+            }
+        }
+
+        private Vector3? CheckTurn(float turnValue)
+        {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, .1f, turnLayer);
+            if (hitColliders.Length != 0)
+            {
+                Tile tile = hitColliders[0].transform.parent.GetComponent<Tile>();
+                TileType type = tile.type;
+                Vector3 tilePosition = tile.transform.position;
+
+                if (lastTurnTilePosition.HasValue && lastTurnTilePosition.Value == tilePosition)
+                {
+                    return null;
+                }
+                if ((type == TileType.LEFT && turnValue == -1) ||
+                    (type == TileType.RIGHT && turnValue == 1) ||
+                    (type == TileType.SIDEWAYS))
+                {
+                    lastTurnTilePosition = tilePosition;
+                    return tile.pivot.position;
+                }
+            }
+            return null;
+        }
+
+        private void Turn(float turnValue, Vector3 turnPosition)
+        {
+            Vector3 tempPlayerPosition = new Vector3(turnPosition.x, transform.position.y, turnPosition.z);
+            controller.enabled = false;
+            transform.position = tempPlayerPosition;
+            controller.enabled = true;
+
+            Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 90 * turnValue, 0);
+            transform.rotation = targetRotation;
+            movementDirection = transform.forward.normalized;
+        }
+        private void PlayerSlide(InputAction.CallbackContext context)
+        {
+            if (!isGameOver)
+            {
                 if (!sliding && isGrounded())
                 {
                     StartCoroutine(Slide());
@@ -260,7 +218,8 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerJump(InputAction.CallbackContext context)
         {
-            if (!isGameOver) {
+            if (!isGameOver)
+            {
                 if (isGrounded())
                 {
                     playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
