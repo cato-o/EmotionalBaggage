@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerJump(InputAction.CallbackContext context) {
         if (isGrounded()) {
-            playerVelocity.y += Mathf.Sqrt(jumpHeight * gravity * -3f);
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * gravity * -2f);
             controller.Move(playerVelocity * Time.deltaTime);
         }
     }   
