@@ -21,9 +21,6 @@ public class TileSpawner : MonoBehaviour
     private float obstacleSpawnFrequency = 0.5f;
 
     [SerializeField]
-    private float turnFrequency;
-
-    [SerializeField]
     private float minimumObstacleSpawnDistance;
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
