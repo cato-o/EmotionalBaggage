@@ -38,7 +38,8 @@ namespace EmotionalBaggage.Player
         private LayerMask airObstacleLayer;
         [SerializeField]
         private Animator animator;
-        private float horizontalSpeed = 2f;
+        [SerializeField]
+        private float initialHorizontalSpeed = 2f;
         [SerializeField]
         private AnimationClip slideAnimationClip;
 
@@ -46,6 +47,7 @@ namespace EmotionalBaggage.Player
         private AnimationClip dieAnimationClip;
         private float gravity;
         private float playerSpeed;
+        private float horizontalSpeed;
         private Vector3 movementDirection = Vector3.forward;
         private Vector3 playerVelocity;
         private PlayerInput playerInput;
@@ -128,6 +130,7 @@ namespace EmotionalBaggage.Player
             virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
             gravity = initialGravityValue;
             playerSpeed = initialPlayerSpeed;
+            horizontalSpeed = initialHorizontalSpeed;
         }
 
         private void HorizReleased(InputAction.CallbackContext context)
@@ -227,6 +230,7 @@ namespace EmotionalBaggage.Player
 
         private void Update()
         {
+            Debug.Log(isGrounded());
             if (!isGrounded(20f))
             {
 
@@ -290,11 +294,16 @@ namespace EmotionalBaggage.Player
                 {
                     animator.speed += (1 / playerSpeed) * Time.deltaTime;
                 }
+
+                if (horizontalSpeed < 5f)
+                {
+                    horizontalSpeed += Time.deltaTime * (1 / playerSpeed);
+                }
             }
 
         }
 
-        private bool isGrounded(float length = .2f)
+        private bool isGrounded(float length = .02f)
         {
             Vector3 raycastOriginFirst = transform.position;
             raycastOriginFirst.y -= controller.height / 2f;
