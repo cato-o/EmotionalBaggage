@@ -7,6 +7,6 @@ public class ScoreUpdater : MonoBehaviour
     private TextMeshProUGUI scoreText;
 
     public void UpdateScore(int score){
-        scoreText.text = score.ToString();
+        scoreText.text = "Distance: " + score.ToString() + "m";
     }
 }

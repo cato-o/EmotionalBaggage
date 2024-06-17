@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using Cinemachine;
 
 namespace EmotionalBaggage.Player {
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private CinemachineVirtualCamera virtualCamera;
+
     [SerializeField]
     private float initialPlayerSpeed = 4f;
 
@@ -36,6 +40,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private AnimationClip slideAnimationClip;
+
+    [SerializeField]
+    private AnimationClip dieAnimationClip;
     private float gravity;
     private float playerSpeed;
     private Vector3 movementDirection = Vector3.forward;
@@ -48,11 +55,15 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
 
     private int slidingAnimationId;
+
+    private int dyingAnimationId;
     private bool sliding = false;
     private float score = 0;
     private bool isFalling = false;
     private float fallTimer = 0f;
     private float maxFallTime = 3f;
+
+    private bool isGameOver = false;
 
     [SerializeField]
     private UnityEvent<Vector3> turnEvent;
@@ -70,6 +81,7 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
 
         slidingAnimationId = Animator.StringToHash("Sliding");
+        dyingAnimationId = Animator.StringToHash("Dying");
 
         turnAction = playerInput.actions["Turn"];
         jumpAction = playerInput.actions["Jump"];
@@ -90,6 +102,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Start() {
+        virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
         gravity = initialGravityValue;
         playerSpeed = initialPlayerSpeed;
     }
@@ -182,8 +195,10 @@ public class PlayerController : MonoBehaviour
             isFalling = false; 
         }
 
-        score += playerSpeed * Time.deltaTime;
-        scoreUpdateEvent.Invoke((int)score);
+        if (!isGameOver) {
+            score += playerSpeed * Time.deltaTime;
+            scoreUpdateEvent.Invoke((int)score);
+        }
 
         controller.Move(transform.forward * playerSpeed * Time.deltaTime);
 
@@ -216,21 +231,58 @@ public class PlayerController : MonoBehaviour
     }
 
     private void GameOver() {
-        Debug.Log("You missed your flight!");
-        gameOverEvent.Invoke((int)score);
+        isGameOver = true;
+        StartCoroutine(Die());
+        }
+  
+
+    private IEnumerator Die() {
+        if (!isFalling) {
+            animator.Play(dyingAnimationId);
+            yield return new WaitForSeconds(dieAnimationClip.length);
+        }
         gameObject.SetActive(false);
+        gameOverEvent.Invoke((int)score);
     }
+
+    private IEnumerator WaitUntilGroundedThenDie() {
+        yield return new WaitUntil(() => isGrounded());
+        GameOver();
+    }
+
+    private bool transitioningOffset = false;
+    private float targetOffsetZ;
+    private float offsetTransitionSpeed = 0.7f;
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {
         if (sliding) {
             if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0) {
-            GameOver();
+                isGameOver = true;
+                StartCoroutine(ChangeCameraOffsetSmoothly(-7f));
+                StartCoroutine(WaitUntilGroundedThenDie());
             }
         }
         else if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0 || ((1 << hit.collider.gameObject.layer) & airObstacleLayer) != 0) {
-            GameOver();
+            isGameOver = true;
+            StartCoroutine(ChangeCameraOffsetSmoothly(-7f));
+            StartCoroutine(WaitUntilGroundedThenDie());
         }
+    }
+
+    private IEnumerator ChangeCameraOffsetSmoothly(float targetOffset) {
+        transitioningOffset = true;
+        CinemachineTransposer transposer = virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>();
+        float initialOffset = transposer.m_FollowOffset.z;
+        float elapsedTime = 0f;
+
+        while (Mathf.Abs(transposer.m_FollowOffset.z - targetOffset) > 0.01f) {
+            elapsedTime += Time.deltaTime;
+            transposer.m_FollowOffset.z = Mathf.Lerp(initialOffset, targetOffset, elapsedTime * offsetTransitionSpeed);
+            yield return null;
+        }
+
+        transposer.m_FollowOffset.z = targetOffset;
+        transitioningOffset = false;
     }
 }
 }
-
