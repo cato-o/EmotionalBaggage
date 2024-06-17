@@ -1741,7 +1741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3721764be97b041e6b203de1fb61dd99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  virtualCamera: {fileID: 0}
+  virtualCamera: {fileID: 209072252}
   initialPlayerSpeed: 15
   maximumPlayerSpeed: 30
   playerSpeedIncreaseRate: 0.1
@@ -1761,7 +1761,7 @@ MonoBehaviour:
     m_Bits: 512
   animator: {fileID: 372835304}
   slideAnimationClip: {fileID: 7400000, guid: a7bab975660b440a2924f82d8c08450f, type: 2}
-  dieAnimationClip: {fileID: 0}
+  dieAnimationClip: {fileID: 7400000, guid: ec1263daa43594228bc8fe9ffa9b6715, type: 2}
   turnEvent:
     m_PersistentCalls:
       m_Calls:

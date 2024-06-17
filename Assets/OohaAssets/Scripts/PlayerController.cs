@@ -23,9 +23,6 @@ namespace EmotionalBaggage.Player
         private float playerSpeedIncreaseRate = .1f;
 
         [SerializeField]
-        private float horizontalSpeedMultiplier = 5f;
-
-        [SerializeField]
         private float jumpHeight = 1.0f;
 
         [SerializeField]
