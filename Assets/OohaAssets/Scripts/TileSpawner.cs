@@ -17,11 +17,21 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private List<GameObject> obstacles;
 
+    [SerializeField]
+    private float obstacleSpawnFrequency = 0.2f;
+
+    [SerializeField]
+    private float turnFrequency;
+
+    [SerializeField]
+    private float minimumObstacleSpawnDistance;
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
+    private Vector3 lastObstaclePosition;
     private GameObject prevTile;
     private List<GameObject> currentTiles;
     private List<GameObject> currentObstacles;
+    
 
     private void Start(){
         currentTiles = new List<GameObject>();
@@ -87,12 +97,17 @@ public class TileSpawner : MonoBehaviour
     }
 
     private void SpawnObstacle(){
-        if (Random.value > 0.2f) return;
+         if (Random.value > obstacleSpawnFrequency) return;
 
         GameObject obstaclePrefab = SelectRandomGameObjectFromList(obstacles);
-        Quaternion newObjectRotation = obstaclePrefab.gameObject.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
-        GameObject obstacle = Instantiate(obstaclePrefab, currentTileLocation, newObjectRotation);
-        currentObstacles.Add(obstacle);
+        Quaternion newObjectRotation = obstaclePrefab.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
+        Vector3 obstacleSpawnPosition = currentTileLocation;
+
+        if (Vector3.Distance(obstacleSpawnPosition, lastObstaclePosition) >= minimumObstacleSpawnDistance) {
+            GameObject obstacle = Instantiate(obstaclePrefab, obstacleSpawnPosition, newObjectRotation);
+            currentObstacles.Add(obstacle);
+            lastObstaclePosition = obstacleSpawnPosition; 
+        }
     }
     private GameObject SelectRandomGameObjectFromList(List<GameObject> list) {
         if (list.Count == 0) return null;
