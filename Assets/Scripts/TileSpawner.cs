@@ -285,6 +285,7 @@ public class TileSpawner : MonoBehaviour
     }
 
     public void Update() {
+        Debug.Log(playerDirection);
         if (PlayerController.Instance != null) {
             float playerSpeed = PlayerController.Instance.playerSpeed; 
             minimumObstacleSpawnDistance = Mathf.Lerp(minimumObstacleSpawnDistance, playerSpeed, Time.deltaTime);
