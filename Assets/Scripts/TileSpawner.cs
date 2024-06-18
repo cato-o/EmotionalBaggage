@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ using System.Collections.Generic;
 using UnityEngine;
 
 namespace EmotionalBaggage {
@@ -36,15 +36,20 @@ public class TileSpawner : MonoBehaviour
 
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
+    private Vector3 savedTileLocation = Vector3.zero;
+    private Vector3 savedTilePlacementScale = Vector3.zero;
     private Vector3 lastObstaclePosition;
     private GameObject prevTile;
     private List<GameObject> currentTiles;
     private List<GameObject> currentObstacles;
+    private List<GameObject> liarTiles;
+    private bool decoy = false;
 
     
 
     private void Start(){
         currentTiles = new List<GameObject>();
+        liarTiles = new List<GameObject>();
         currentObstacles = new List<GameObject>();
         obstacleSpawnFrequency = initialObstacleSpawnFrequency;
 
@@ -54,7 +59,29 @@ public class TileSpawner : MonoBehaviour
             SpawnTile(startingTile.GetComponent<Tile>());
         }
 
-        SpawnTile(SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>());
+        Tile firstTurn = SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>();
+        SpawnTile(firstTurn, false);
+        if (firstTurn.type == TileType.LEFT) {
+            currentTileDirection = Vector3.left;
+        } else if (firstTurn.type == TileType.RIGHT) {
+            currentTileDirection = Vector3.right;
+        }
+
+        savedTileLocation = currentTileLocation;
+
+        Vector3 tilePlacementScale;
+        tilePlacementScale = Vector3.Scale((prevTile.GetComponent<Renderer>().bounds.size - (Vector3.one * 2)) + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
+        currentTileLocation += tilePlacementScale;
+
+        // spawn decoy tiles
+        for (int i = 0; i < 15; ++i) {
+            decoy = true;
+            SpawnTile(startingTile.GetComponent<Tile>());
+            decoy = false;
+        }
+        
+        currentTileLocation = savedTileLocation;
+
     }
 
     public void Update(){
@@ -69,7 +96,12 @@ public class TileSpawner : MonoBehaviour
         Quaternion newTileRotation = tile.gameObject.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
 
         prevTile = GameObject.Instantiate(tile.gameObject, currentTileLocation, newTileRotation);
-        currentTiles.Add(prevTile);
+        if (decoy) {
+            liarTiles.Add(prevTile);
+        }
+        else {
+            currentTiles.Add(prevTile);
+        }
 
         if (spawnObstacle) SpawnObstacle();
 
@@ -77,6 +109,15 @@ public class TileSpawner : MonoBehaviour
             currentTileLocation += Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size, currentTileDirection);
         }
         
+    }
+
+    private void iHateLiars() {
+        Debug.Log("deleting the decoys");
+         while (liarTiles.Count != 0) {
+            GameObject tile = liarTiles[0];
+            liarTiles.RemoveAt(0);
+            Destroy(tile);
+        }
     }
 
     private void DeletePreviousTiles() {   
@@ -94,13 +135,16 @@ public class TileSpawner : MonoBehaviour
     }
 
     public void AddNewDirection(Vector3 direction) {
+        Debug.Log("direction: " + direction);
         currentTileDirection = direction;
         DeletePreviousTiles();
+        iHateLiars();
 
         Vector3 tilePlacementScale;
         tilePlacementScale = Vector3.Scale((prevTile.GetComponent<Renderer>().bounds.size - (Vector3.one * 2)) + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
 
         currentTileLocation += tilePlacementScale;
+
 
         int currentPathLength = Random.Range(minimumStraightTiles, maximumStraightTiles);
 
@@ -108,16 +152,32 @@ public class TileSpawner : MonoBehaviour
             SpawnTile(startingTile.GetComponent<Tile>(), (i == 0)? false : true);
         }
 
-       // SecondTileSpawn = 
+        Tile theTurn = SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>();
+        SpawnTile(theTurn, false);
+        if (theTurn.type == TileType.LEFT) {
+            currentTileDirection = Quaternion.Euler(0, -90, 0) * currentTileDirection;
+        } else if (theTurn.type == TileType.RIGHT) {
+            currentTileDirection = Quaternion.Euler(0, 90, 0) * currentTileDirection;
 
-        SpawnTile(SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>(), false);
+        }
 
+        savedTilePlacementScale = tilePlacementScale;
+        savedTileLocation = currentTileLocation;
 
+        tilePlacementScale = Vector3.Scale((prevTile.GetComponent<Renderer>().bounds.size - (Vector3.one * 2)) + (Vector3.one * startingTile.GetComponent<BoxCollider>().size.z / 2), currentTileDirection);
+        currentTileLocation += tilePlacementScale;
+
+        // spawn decoy tiles
+        for (int i = 0; i < 15; ++i) {
+            decoy = true;
+            SpawnTile(startingTile.GetComponent<Tile>());
+            decoy = false;
+        }
+
+        tilePlacementScale = savedTilePlacementScale;
+        currentTileLocation = savedTileLocation;
     }
 
-    //public bool Clicked() {
-      //  return true;
-    //}
 
     private void SpawnObstacle(){
          if (Random.value > obstacleSpawnFrequency) return;
