@@ -5,15 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    Scene currentScene;
+    string currentSceneName;
+    bool firstRun = true;
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Debug.Log("first run: " + firstRun);
+        currentScene = SceneManager.GetActiveScene();
+        currentSceneName = currentScene.name;
+        if (currentSceneName == "IntroScene")
+        {
+            // run tutorialsetup
+            firstRun = false;
+        }
     }
 
     public void RestartGame() {
