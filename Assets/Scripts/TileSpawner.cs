@@ -1,5 +1,6 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
+using EmotionalBaggage.Player;
 
 namespace EmotionalBaggage {
 public class TileSpawner : MonoBehaviour
@@ -24,10 +25,11 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private float obstacleSpawnFrequency;
     [SerializeField]
-    private float minimumObstacleSpawnDistance;
+    private float initialObstacleSpawnDistance;
 
     [SerializeField]
     private float rampSpawnFrequency = 0.2f;
+    private float minimumObstacleSpawnDistance;
 
     //three floor definitons
     private float floor1YValue = 0f;
@@ -37,6 +39,7 @@ public class TileSpawner : MonoBehaviour
 
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
+    public Vector3 playerDirection = Vector3.forward;
     private Vector3 savedTileLocation = Vector3.zero;
     private Vector3 savedTilePlacementScale = Vector3.zero;
     private Vector3 lastObstaclePosition;
@@ -49,16 +52,17 @@ public class TileSpawner : MonoBehaviour
     private TileType lastTileType;
 
     
-
     private void Start(){
         isStart = true;
         currentTiles = new List<GameObject>();
         liarTiles = new List<GameObject>();
         currentObstacles = new List<GameObject>();
+        minimumObstacleSpawnDistance = initialObstacleSpawnDistance;
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
         //this sets up the starting stretch of tile
+        //SpawnTile(BASE CIRCLE)
         for (int i = 0; i < tileStartCount - 2; ++i) {
             SpawnTile(startingTile.GetComponent<Tile>());
         }
@@ -234,7 +238,7 @@ public class TileSpawner : MonoBehaviour
         // Check if the last spawned obstacle is the same as the current obstacle prefab
         if (currentObstacles.Count > 0) {
             GameObject lastObstacle = currentObstacles[currentObstacles.Count - 1];
-            if ((lastObstacle.CompareTag(obstaclePrefab.tag)) && (obstaclePrefab.tag == "AnimatorObstacle")) {
+            if (lastObstacle.CompareTag(obstaclePrefab.tag)) {
                 return;
             }
         }
@@ -244,14 +248,16 @@ public class TileSpawner : MonoBehaviour
 
 
         if (obstaclePrefab.tag == "Dodger") {
-            float xOffset;
-            if (Random.value < 0.5f) {
-                xOffset = Random.Range(-1.0f, -0.4f);
-            } else {
-                xOffset = Random.Range(0.4f, 1.0f);
+            float offset;
+            offset = Random.Range(-1.0f, 1.0f);
+        
+            if (playerDirection == Vector3.right || playerDirection == Vector3.left) {
+                obstacleSpawnPosition.x += offset;
             }
 
-            obstacleSpawnPosition.x += xOffset;
+            if (playerDirection == Vector3.forward || playerDirection == Vector3.back) {
+                obstacleSpawnPosition.z += offset;
+            }
         }
 
         if (Vector3.Distance(obstacleSpawnPosition, lastObstaclePosition) >= minimumObstacleSpawnDistance) {
@@ -277,6 +283,21 @@ public class TileSpawner : MonoBehaviour
             return forwardTiles[0]; // pick a straight
         }
     }
-        
+
+    public void Update() {
+        if (PlayerController.Instance != null) {
+            float playerSpeed = PlayerController.Instance.playerSpeed; 
+            minimumObstacleSpawnDistance = Mathf.Lerp(minimumObstacleSpawnDistance, playerSpeed, Time.deltaTime);
+        }
+    }
+
+    public void playerDirectionCalculator(Vector3 direction) {
+        {
+        Vector3 newDirection = Quaternion.LookRotation(direction, Vector3.up) * playerDirection;
+        newDirection.Normalize();
+        playerDirection = newDirection;
+        }
+    }   
 }
 }
+

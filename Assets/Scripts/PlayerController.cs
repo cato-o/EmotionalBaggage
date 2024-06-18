@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,12 @@ namespace EmotionalBaggage.Player
     [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance;
+
+        public TileSpawner tileSpawnerInstance;
+
+        public float playerSpeed;
+        
         [SerializeField]
         private CinemachineVirtualCamera virtualCamera;
 
@@ -50,7 +57,6 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private AnimationClip fallAnimationClip;
         private float gravity;
-        private float playerSpeed;
         private float horizontalSpeed;
         private Vector3 movementDirection = Vector3.forward;
         private Vector3 playerVelocity;
@@ -342,19 +348,18 @@ namespace EmotionalBaggage.Player
         {
             if (Physics.CheckSphere(transform.position, .1f, rampLayer))
             {
-                if (!onRamp)
-                {
-                    playerVelocity.y = -20f;
+                // playerVelocity = new Vector3 (tileSpawnerInstance.playerDirection.x, -1, tileSpawnerInstance.playerDirection.z) * playerSpeed;
+               // Quaternion transform.rotation.x
+                if (!onRamp){
                     onRamp = true;
+                    
                 }
             }
-            else if (onRamp)
+            else
             {
-                playerVelocity.y = 0f;
                 onRamp = false;
             }
         }
-
 
         private void GameOver()
         {
@@ -417,3 +422,4 @@ namespace EmotionalBaggage.Player
         }
     }
 }
+
