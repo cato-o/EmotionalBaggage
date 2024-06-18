@@ -179,10 +179,20 @@ public class TileSpawner : MonoBehaviour
     }
 
 
-    private void SpawnObstacle(){
-         if (Random.value > obstacleSpawnFrequency) return;
+    private void SpawnObstacle() {
+        if (Random.value > obstacleSpawnFrequency) return;
 
         GameObject obstaclePrefab = SelectRandomGameObjectFromList(obstacles);
+
+        // Check if the last spawned obstacle is the same as the current obstacle prefab
+        if (currentObstacles.Count > 0) {
+            GameObject lastObstacle = currentObstacles[currentObstacles.Count - 1];
+            if (lastObstacle.CompareTag(obstaclePrefab.tag) && lastObstacle.name == "AnimatorObstacle") {
+                Debug.Log("Skipping spawn of consecutive same obstacle: " + obstaclePrefab.name);
+                return;
+            }
+        }
+
         Quaternion newObjectRotation = obstaclePrefab.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
         Vector3 obstacleSpawnPosition = currentTileLocation;
 

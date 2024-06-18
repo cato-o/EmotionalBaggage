@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Obstacle
   - CameraZone
+  - AnimatorObstacle
   layers:
   - Default
   - TransparentFX
