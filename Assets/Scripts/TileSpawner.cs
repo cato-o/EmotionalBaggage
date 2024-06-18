@@ -30,6 +30,7 @@ public class TileSpawner : MonoBehaviour
     private float ObstacleSpawnIncreaseRate = 0.01f;
     private float initialObstacleSpawnFrequency = 0.5f;
 
+    [SerializeField]
     private float rampSpawnFrequency = 0.2f;
 
     //three floor definitons

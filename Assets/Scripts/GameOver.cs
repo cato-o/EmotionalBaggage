@@ -9,8 +9,6 @@ public class GameOver : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreText;
 
-    
-
     private int score = 0;
 
     public void StopGame(int score) {
@@ -18,9 +16,6 @@ public class GameOver : MonoBehaviour
         scoreText.text = "Distance: " +score.ToString() + "m";
 
         Time.timeScale = 0f;
-    }
-    public void AddXP(int score) {
-
     }
 
     public void ReloadScene() {

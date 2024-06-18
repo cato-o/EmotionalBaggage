@@ -47,6 +47,8 @@ namespace EmotionalBaggage.Player
 
         [SerializeField]
         private AnimationClip dieAnimationClip;
+        [SerializeField]
+        private AnimationClip fallAnimationClip;
         private float gravity;
         private float playerSpeed;
         private float horizontalSpeed;
@@ -62,6 +64,7 @@ namespace EmotionalBaggage.Player
 
         private int slidingAnimationId;
         private int dyingAnimationId;
+        private int fallingAnimationId;
         private bool sliding = false;
         private float score = 0;
         private bool isFalling = false;
@@ -92,6 +95,7 @@ namespace EmotionalBaggage.Player
 
             slidingAnimationId = Animator.StringToHash("Sliding");
             dyingAnimationId = Animator.StringToHash("Dying");
+            fallingAnimationId = Animator.StringToHash("Falling");
 
             moveAction = playerInput.actions["Move"];
             turnAction = playerInput.actions["Turn"];
@@ -233,6 +237,10 @@ namespace EmotionalBaggage.Player
 
         private void Update()
         {
+            if (isGameOver && isFalling){
+                animator.Play(fallingAnimationId);
+            }
+            
             if (!isGrounded(20f))
             {
 
