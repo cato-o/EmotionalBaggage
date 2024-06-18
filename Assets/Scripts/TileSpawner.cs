@@ -25,19 +25,13 @@ public class TileSpawner : MonoBehaviour
     private float obstacleSpawnFrequency;
     [SerializeField]
     private float minimumObstacleSpawnDistance;
-    
-    private float maximumObstacleFrequency = 1f;
-    private float ObstacleSpawnIncreaseRate = 0.01f;
-    private float initialObstacleSpawnFrequency = 0.5f;
 
     [SerializeField]
     private float rampSpawnFrequency = 0.2f;
 
     //three floor definitons
     private float floor1YValue = 0f;
-    private float OneToTwoYValue = 1.11f;
     private float floor2YValue = 2.215f;
-    private float TwoToThreeYValue = 3.33f;
     private float floor3YValue = 4.445f;
     private float currentFloor = 1;
 
@@ -61,7 +55,6 @@ public class TileSpawner : MonoBehaviour
         currentTiles = new List<GameObject>();
         liarTiles = new List<GameObject>();
         currentObstacles = new List<GameObject>();
-        obstacleSpawnFrequency = initialObstacleSpawnFrequency;
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -106,14 +99,6 @@ public class TileSpawner : MonoBehaviour
 
     }
 
-    public void Update(){
-        if (obstacleSpawnFrequency < maximumObstacleFrequency)
-            {
-                obstacleSpawnFrequency += Time.deltaTime * ObstacleSpawnIncreaseRate;
-            }
-        Debug.Log(currentFloor);
-    }
-    
     private void SpawnTile(Tile tile, bool spawnObstacle = false) {
 
         // don't spawn up ramp if on floor 3
@@ -249,8 +234,7 @@ public class TileSpawner : MonoBehaviour
         // Check if the last spawned obstacle is the same as the current obstacle prefab
         if (currentObstacles.Count > 0) {
             GameObject lastObstacle = currentObstacles[currentObstacles.Count - 1];
-            if (lastObstacle.CompareTag(obstaclePrefab.tag) && lastObstacle.name == "AnimatorObstacle") {
-                Debug.Log("Skipping spawn of consecutive same obstacle: " + obstaclePrefab.name);
+            if (lastObstacle.CompareTag(obstaclePrefab.tag)) {
                 return;
             }
         }

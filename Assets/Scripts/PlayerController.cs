@@ -122,15 +122,17 @@ namespace EmotionalBaggage.Player
 
         private void PlayerMove(InputAction.CallbackContext context)
         {
-            Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
-            if (turnBlock.HasValue)
-            {
-                return;
-            }
+            if (!isGameOver && !onRamp){
+                Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
+                if (turnBlock.HasValue)
+                {
+                    return;
+                }
 
-            isHorizHeld = true;
-            float direction = context.ReadValue<float>();
-            horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeed * Time.deltaTime;
+                isHorizHeld = true;
+                float direction = context.ReadValue<float>();
+                horizontalMove = transform.right * context.ReadValue<float>() * horizontalSpeed * Time.deltaTime;
+            }
 
         }
         private void Start()
@@ -196,7 +198,7 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerSlide(InputAction.CallbackContext context)
         {
-            if (!isGameOver)
+            if (!isGameOver && !onRamp)
             {
                 if (!sliding && isGrounded())
                 {
@@ -225,7 +227,7 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerJump(InputAction.CallbackContext context)
         {
-            if (!isGameOver)
+            if (!isGameOver && !onRamp)
             {
                 if (isGrounded())
                 {
@@ -236,7 +238,7 @@ namespace EmotionalBaggage.Player
         }
 
         private void Update()
-        {
+        {   
             if (isGameOver && isFalling){
                 animator.Play(fallingAnimationId);
             }
@@ -268,14 +270,17 @@ namespace EmotionalBaggage.Player
                 isFalling = false;
             }
 
-            //if game done, stop the score
+            //if game done, stop the score and don't let the player move
             if (!isGameOver)
             {
                 score += playerSpeed * Time.deltaTime;
                 scoreUpdateEvent.Invoke((int)score);
             }
 
-            controller.Move(transform.forward * playerSpeed * Time.deltaTime);
+            if (!isGameOver || isFalling) {
+                controller.Move(transform.forward * playerSpeed * Time.deltaTime);
+            }
+        
 
             if (isHorizHeld && horizontalMove != null)
             {
@@ -287,10 +292,8 @@ namespace EmotionalBaggage.Player
                 playerVelocity.y = 0f;
             }
 
-            if ((!isGameOver) || (!isGrounded())) {
-                playerVelocity.y += gravity * Time.deltaTime;
-                controller.Move(playerVelocity * Time.deltaTime);
-            }
+            playerVelocity.y += gravity * Time.deltaTime;
+            controller.Move(playerVelocity * Time.deltaTime);
 
             if (!Physics.CheckSphere(transform.position, .1f, turnLayer))
             {
@@ -341,7 +344,7 @@ namespace EmotionalBaggage.Player
             {
                 if (!onRamp)
                 {
-                    playerVelocity.y = -10f;
+                    playerVelocity.y = -20f;
                     playerSpeed *= 2;
                     onRamp = true;
                 }

@@ -113,9 +113,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6628168886580181777}
-  - component: {fileID: 9116369628653731488}
   m_Layer: 0
-  m_Name: Open Suitcase
+  m_Name: Obstacle
   m_TagString: AnimatorObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,24 +137,6 @@ Transform:
   - {fileID: 7453196179453926245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9116369628653731488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1887772381221813489}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  outlineWidth: 10
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &4838477387124307625
 GameObject:
   m_ObjectHideFlags: 0
