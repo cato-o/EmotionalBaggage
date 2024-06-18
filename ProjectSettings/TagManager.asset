@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Obstacle
   - CameraZone
+  - Move
+  - Turn
   layers:
   - Default
   - TransparentFX

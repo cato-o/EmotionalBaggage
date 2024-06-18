@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TutorialSetup : MonoBehaviour
+public class IntroSetup : MonoBehaviour
 {
 
     [SerializeField]

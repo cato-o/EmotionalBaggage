@@ -229,7 +229,7 @@ namespace EmotionalBaggage.Player
 
         private void Update()
         {
-            Debug.Log(isGrounded());
+            // Debug.Log(isGrounded());
             if (!isGrounded(20f))
             {
 
