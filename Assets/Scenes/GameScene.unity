@@ -1742,7 +1742,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualCamera: {fileID: 209072252}
-  initialPlayerSpeed: 15
+  initialPlayerSpeed: 10
   maximumPlayerSpeed: 40
   playerSpeedIncreaseRate: 0.2
   jumpHeight: 1
@@ -1753,6 +1753,9 @@ MonoBehaviour:
   turnLayer:
     serializedVersion: 2
     m_Bits: 128
+  rampLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -1763,6 +1766,7 @@ MonoBehaviour:
   initialHorizontalSpeed: 2
   slideAnimationClip: {fileID: 7400000, guid: a7bab975660b440a2924f82d8c08450f, type: 2}
   dieAnimationClip: {fileID: 7400000, guid: ec1263daa43594228bc8fe9ffa9b6715, type: 2}
+  fallAnimationClip: {fileID: 7400000, guid: f249bf4732d604ea389e3505a5cd6235, type: 2}
   turnEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2123,19 +2127,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileStartCount: 5
-  minimumStraightTiles: 2
+  minimumStraightTiles: 5
   maximumStraightTiles: 10
   startingTile: {fileID: 7270030239991754380, guid: 50a7756a8e2f0f14787d70ef66f51488, type: 3}
+  startingRamp: {fileID: 7270030239991754380, guid: f6645d695038243809ccfaa60839925b, type: 3}
   turnTiles:
   - {fileID: 3504972824814534260, guid: 57a0c77d40fb7f64f88c73e669bd75d0, type: 3}
   - {fileID: 3109650500946958552, guid: d1bc38dd49605864690bd11be3a4da2a, type: 3}
   obstacles:
   - {fileID: 7602181854675208719, guid: 155f450bb33de2c4f96d377dba80b194, type: 3}
-  - {fileID: 1887772381221813489, guid: 7acef6c3f1b5d6f45b162045d394132f, type: 3}
+  - {fileID: 1261420050835976642, guid: bf1154bd8b877044dbe7afef7ba45327, type: 3}
   - {fileID: 7602181854675208719, guid: 08ce5558dbbcc49d99b61f68b8ce74ba, type: 3}
   - {fileID: 7602181854675208719, guid: d87e6301b9b8d48629bc726d98634f2a, type: 3}
+  forwardTiles:
+  - {fileID: 7270030239991754380, guid: 50a7756a8e2f0f14787d70ef66f51488, type: 3}
+  - {fileID: 7270030239991754380, guid: f6645d695038243809ccfaa60839925b, type: 3}
+  - {fileID: 7270030239991754380, guid: 2c36a6744de5a44e1bf6492a8e936d27, type: 3}
   obstacleSpawnFrequency: 0.5
-  minimumObstacleSpawnDistance: 7
+  minimumObstacleSpawnDistance: 4
+  rampSpawnFrequency: 0.1
 --- !u!4 &2086418735
 Transform:
   m_ObjectHideFlags: 0

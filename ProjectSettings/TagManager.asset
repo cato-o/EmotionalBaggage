@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Obstacle
   - CameraZone
+  - AnimatorObstacle
   - Move
   - Turn
   layers:
@@ -21,7 +22,7 @@ TagManager:
   - Turn
   - Obstacle
   - Air Obstacle
-  - 
+  - Ramp
   - 
   - 
   - 

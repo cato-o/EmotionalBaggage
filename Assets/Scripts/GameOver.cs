@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-
     [SerializeField] private TextMeshProUGUI scoreText;
 
     private int score = 0;
@@ -15,12 +14,12 @@ public class GameOver : MonoBehaviour
     public void StopGame(int score) {
         this.score = score;
         scoreText.text = "Distance: " +score.ToString() + "m";
-    }
-    public void AddXP(int score) {
 
+        Time.timeScale = 0f;
     }
 
     public void ReloadScene() {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

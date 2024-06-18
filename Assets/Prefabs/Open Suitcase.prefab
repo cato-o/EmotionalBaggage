@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 6628168886580181777}
   - component: {fileID: 9116369628653731488}
   m_Layer: 0
-  m_Name: Obstacle
+  m_Name: Open Suitcase
   m_TagString: AnimatorObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
