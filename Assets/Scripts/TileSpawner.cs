@@ -13,14 +13,19 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private GameObject startingTile;
     [SerializeField]
+    private GameObject startingRamp;
+    [SerializeField]
     private List<GameObject> turnTiles;
     [SerializeField]
     private List<GameObject> obstacles;
+    [SerializeField]
+    private List<GameObject> forwardTiles;
 
     [SerializeField]
     private float obstacleSpawnFrequency;
     [SerializeField]
     private float minimumObstacleSpawnDistance;
+    
     private float maximumObstacleFrequency = 1f;
     private float ObstacleSpawnIncreaseRate = 0.01f;
     private float initialObstacleSpawnFrequency = 0.5f;
@@ -29,10 +34,11 @@ public class TileSpawner : MonoBehaviour
 
     //three floor definitons
     private float floor1YValue = 0f;
-    private float upRampOneToTwoYValue = 1.11f;
+    private float OneToTwoYValue = 1.11f;
     private float floor2YValue = 2.215f;
-    private float upRampTwoToThreeYValue = 3.33f;
+    private float TwoToThreeYValue = 3.33f;
     private float floor3YValue = 4.445f;
+    private float currentFloor = 1;
 
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
@@ -44,10 +50,13 @@ public class TileSpawner : MonoBehaviour
     private List<GameObject> currentObstacles;
     private List<GameObject> liarTiles;
     private bool decoy = false;
+    private bool isStart = false;
+    private TileType lastTileType;
 
     
 
     private void Start(){
+        isStart = true;
         currentTiles = new List<GameObject>();
         liarTiles = new List<GameObject>();
         currentObstacles = new List<GameObject>();
@@ -55,10 +64,19 @@ public class TileSpawner : MonoBehaviour
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
-        for (int i = 0; i < tileStartCount; ++i) {
+        //this sets up the starting stretch of tile
+        for (int i = 0; i < tileStartCount - 2; ++i) {
             SpawnTile(startingTile.GetComponent<Tile>());
         }
 
+        SpawnTile(startingRamp.GetComponent<Tile>());
+
+        for (int i = 0; i < 2; ++i) {
+            SpawnTile(startingTile.GetComponent<Tile>());
+        }
+    
+
+        // first turn tile spawn
         Tile firstTurn = SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>();
         SpawnTile(firstTurn, false);
         if (firstTurn.type == TileType.LEFT) {
@@ -67,6 +85,7 @@ public class TileSpawner : MonoBehaviour
             currentTileDirection = Vector3.right;
         }
 
+        // saves the tile location before it's modified for the decoy tiles
         savedTileLocation = currentTileLocation;
 
         Vector3 tilePlacementScale;
@@ -80,7 +99,9 @@ public class TileSpawner : MonoBehaviour
             decoy = false;
         }
         
+        // set back save
         currentTileLocation = savedTileLocation;
+        isStart = false;
 
     }
 
@@ -89,30 +110,71 @@ public class TileSpawner : MonoBehaviour
             {
                 obstacleSpawnFrequency += Time.deltaTime * ObstacleSpawnIncreaseRate;
             }
+        Debug.Log(currentFloor);
     }
     
     private void SpawnTile(Tile tile, bool spawnObstacle = false) {
 
+        // don't spawn up ramp if on floor 3
+        if ((tile.type == TileType.UPRAMP && currentFloor == 3) ||
+            (tile.type == TileType.DOWNRAMP && currentFloor == 1)) {
+            return;
+        }
+
+        
+        if (tile.type == TileType.STRAIGHT && !isStart) {
+            spawnObstacle = Random.value < obstacleSpawnFrequency;
+        }
+
         Quaternion newTileRotation = tile.gameObject.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
+        
+        if (tile.type == TileType.DOWNRAMP) {
+            currentTileLocation.y -= 2.215f;
+        }
 
         prevTile = GameObject.Instantiate(tile.gameObject, currentTileLocation, newTileRotation);
+
         if (decoy) {
             liarTiles.Add(prevTile);
         }
         else {
             currentTiles.Add(prevTile);
+            if (spawnObstacle) SpawnObstacle();
         }
 
-        if (spawnObstacle) SpawnObstacle();
 
         if (tile.type == TileType.STRAIGHT) {
             currentTileLocation += Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size, currentTileDirection);
         }
         
+        if (tile.type == TileType.UPRAMP) {
+            currentTileLocation += Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size, currentTileDirection);
+            if (currentFloor == 1) {
+                currentTileLocation.y = floor2YValue;
+                currentFloor = 2;
+            } else {
+                currentTileLocation.y = floor3YValue;
+                currentFloor = 3;
+            }
+        }
+
+        if (tile.type == TileType.DOWNRAMP) {
+            currentTileLocation += Vector3.Scale(prevTile.GetComponent<Renderer>().bounds.size, currentTileDirection);
+            if (currentFloor == 3) {
+                currentTileLocation.y = floor2YValue;
+                currentFloor = 2;
+            } else {
+                currentTileLocation.y = floor1YValue;
+                currentFloor = 1;
+            }
+            
+        }
+
+        
     }
 
     private void iHateLiars() {
-        Debug.Log("deleting the decoys");
+        // don't mind the silly name, deletes the decoys
          while (liarTiles.Count != 0) {
             GameObject tile = liarTiles[0];
             liarTiles.RemoveAt(0);
@@ -135,7 +197,6 @@ public class TileSpawner : MonoBehaviour
     }
 
     public void AddNewDirection(Vector3 direction) {
-        Debug.Log("direction: " + direction);
         currentTileDirection = direction;
         DeletePreviousTiles();
         iHateLiars();
@@ -145,11 +206,12 @@ public class TileSpawner : MonoBehaviour
 
         currentTileLocation += tilePlacementScale;
 
+        SpawnTile(startingTile.GetComponent<Tile>()); // starting tile after turn to avoid any weird mesh overlaps
 
         int currentPathLength = Random.Range(minimumStraightTiles, maximumStraightTiles);
 
         for (int i = 0; i < currentPathLength; ++i) {
-            SpawnTile(startingTile.GetComponent<Tile>(), (i == 0)? false : true);
+            SpawnTile(SelectRandomForwardTile(forwardTiles).GetComponent<Tile>());
         }
 
         Tile theTurn = SelectRandomGameObjectFromList(turnTiles).GetComponent<Tile>();
@@ -180,7 +242,6 @@ public class TileSpawner : MonoBehaviour
 
 
     private void SpawnObstacle() {
-        if (Random.value > obstacleSpawnFrequency) return;
 
         GameObject obstaclePrefab = SelectRandomGameObjectFromList(obstacles);
 
@@ -208,6 +269,17 @@ public class TileSpawner : MonoBehaviour
         return list[Random.Range(0, list.Count)];
 
     }
-}
 
+    private GameObject SelectRandomForwardTile(List<GameObject> list){
+        if (Random.value < rampSpawnFrequency)
+        {
+            return (Random.value < 0.5f) ? forwardTiles[1] : forwardTiles[2]; // randomly pick a ramp
+        }
+        else 
+        {
+            return forwardTiles[0]; // pick a straight
+        }
+    }
+        
+}
 }

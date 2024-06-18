@@ -33,6 +33,8 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private LayerMask turnLayer;
         [SerializeField]
+        private LayerMask rampLayer;
+        [SerializeField]
         private LayerMask obstacleLayer;
         [SerializeField]
         private LayerMask airObstacleLayer;
@@ -68,6 +70,8 @@ namespace EmotionalBaggage.Player
         private float targetOffsetZ;
         private float offsetTransitionSpeed = 0.7f;
         private bool isGameOver = false;
+        private bool onRamp = false;
+
 
         [SerializeField]
         private UnityEvent<Vector3> turnEvent;
@@ -275,8 +279,10 @@ namespace EmotionalBaggage.Player
                 playerVelocity.y = 0f;
             }
 
-            playerVelocity.y += gravity * Time.deltaTime;
-            controller.Move(playerVelocity * Time.deltaTime);
+            if ((!isGameOver) || (!isGrounded())) {
+                playerVelocity.y += gravity * Time.deltaTime;
+                controller.Move(playerVelocity * Time.deltaTime);
+            }
 
             if (!Physics.CheckSphere(transform.position, .1f, turnLayer))
             {
@@ -299,6 +305,9 @@ namespace EmotionalBaggage.Player
                 }
             }
 
+            CheckRamp();
+            
+
         }
 
         private bool isGrounded(float length = .02f)
@@ -316,6 +325,25 @@ namespace EmotionalBaggage.Player
                 return true;
             }
             return false;
+        }
+
+        private void CheckRamp()
+        {
+            if (Physics.CheckSphere(transform.position, .1f, rampLayer))
+            {
+                if (!onRamp)
+                {
+                    playerVelocity.y = -10f;
+                    playerSpeed *= 2;
+                    onRamp = true;
+                }
+            }
+            else if (onRamp)
+            {
+                playerVelocity.y = 0f;
+                playerSpeed /= 2;
+                onRamp = false;
+            }
         }
 
         private void GameOver()
@@ -360,6 +388,7 @@ namespace EmotionalBaggage.Player
                 StartCoroutine(WaitUntilGroundedThenDie());
             }
         }
+        
 
         private IEnumerator ChangeCameraOffsetSmoothly(float targetOffset)
         {
