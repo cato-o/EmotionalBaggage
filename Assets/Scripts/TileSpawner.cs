@@ -234,13 +234,25 @@ public class TileSpawner : MonoBehaviour
         // Check if the last spawned obstacle is the same as the current obstacle prefab
         if (currentObstacles.Count > 0) {
             GameObject lastObstacle = currentObstacles[currentObstacles.Count - 1];
-            if (lastObstacle.CompareTag(obstaclePrefab.tag)) {
+            if ((lastObstacle.CompareTag(obstaclePrefab.tag)) && (obstaclePrefab.tag == "AnimatorObstacle")) {
                 return;
             }
         }
 
         Quaternion newObjectRotation = obstaclePrefab.transform.rotation * Quaternion.LookRotation(currentTileDirection, Vector3.up);
         Vector3 obstacleSpawnPosition = currentTileLocation;
+
+
+        if (obstaclePrefab.tag == "Dodger") {
+            float xOffset;
+            if (Random.value < 0.5f) {
+                xOffset = Random.Range(-1.0f, -0.4f);
+            } else {
+                xOffset = Random.Range(0.4f, 1.0f);
+            }
+
+            obstacleSpawnPosition.x += xOffset;
+        }
 
         if (Vector3.Distance(obstacleSpawnPosition, lastObstaclePosition) >= minimumObstacleSpawnDistance) {
             GameObject obstacle = Instantiate(obstaclePrefab, obstacleSpawnPosition, newObjectRotation);

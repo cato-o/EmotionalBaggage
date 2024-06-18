@@ -11,6 +11,7 @@ TagManager:
   - AnimatorObstacle
   - Move
   - Turn
+  - Dodger
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Obstacle
   - Air Obstacle
   - Ramp
-  - 
+  - Scan
   - 
   - 
   - 

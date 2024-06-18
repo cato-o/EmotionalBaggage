@@ -345,17 +345,16 @@ namespace EmotionalBaggage.Player
                 if (!onRamp)
                 {
                     playerVelocity.y = -20f;
-                    playerSpeed *= 2;
                     onRamp = true;
                 }
             }
             else if (onRamp)
             {
                 playerVelocity.y = 0f;
-                playerSpeed /= 2;
                 onRamp = false;
             }
         }
+
 
         private void GameOver()
         {

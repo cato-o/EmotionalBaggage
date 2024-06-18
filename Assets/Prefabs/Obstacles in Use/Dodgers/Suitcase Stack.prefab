@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7602181854675208718}
   m_Layer: 8
-  m_Name: Right Suitcase Stack
-  m_TagString: Untagged
+  m_Name: Suitcase Stack
+  m_TagString: Dodger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,7 +148,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 1db66bec5bc780847913bbe48b952f1b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.757
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1db66bec5bc780847913bbe48b952f1b, type: 3}
       propertyPath: m_LocalPosition.y
