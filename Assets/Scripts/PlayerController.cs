@@ -84,8 +84,9 @@ namespace EmotionalBaggage.Player
         private bool isGameOver = false;
         private bool onRamp = false;
         private bool isDying = false;
-        
 
+        public AudioSource jumpSound;
+        public AudioSource duckSound;
 
         [SerializeField]
         private UnityEvent<Vector3> turnEvent;
@@ -211,10 +212,12 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerSlide(InputAction.CallbackContext context)
         {
+            //duckSound = GetComponent<AudioSource>();
             if (!isGameOver && (!onRamp))
             {
                 if (!sliding && isGrounded())
                 {
+                    //duckSound.Play();
                     StartCoroutine(Slide());
                 }
             }
@@ -240,10 +243,12 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerJump(InputAction.CallbackContext context)
         {
+            jumpSound = GetComponent<AudioSource>();
             if (!isGameOver && (!onRamp))
             {
                 if (isGrounded())
                 {
+                    jumpSound.Play();
                     playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
                     controller.Move(playerVelocity * Time.deltaTime);
                 }
