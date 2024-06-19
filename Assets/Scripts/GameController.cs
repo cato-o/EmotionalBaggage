@@ -15,7 +15,8 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private Button storyMode;
     [SerializeField] private Button endlessMode;
-    [SerializeField] private Button optionMenu;
+    [SerializeField] private Button creditScene;
+    
     public int distance = 0;
     public float time;
     [SerializeField] private TextMeshProUGUI timerText;
@@ -49,8 +50,7 @@ public class GameController : MonoBehaviour
     {
         if (currentSceneName == "GameScene")
         {
-            timerText.text = "Time: " + Time.timeSinceLevelLoad.ToString("F2");
-            // add distance score, if isEndless, distance counts up. otherwise counts down
+            timerText.text = string.Format("{0:0}:{1:00}", Mathf.FloorToInt(timeSinceLevelLoad / 60F), Mathf.FloorToInt(timeSinceLevelLoad - (Mathf.FloorToInt(timeSinceLevelLoad / 60F)) * 60));
         }
         
         if (currentSceneName == "GameScene" && !isEndless && distance < 0)
@@ -76,12 +76,6 @@ public class GameController : MonoBehaviour
     void LoadEnding() 
     {
         SceneManager.LoadScene("EndScene");
-    }
-
-    public void LoadCredits()
-    {
-        Debug.Log("load credits");
-        // add credits logic here
     }
 
     public void UpdateDistance(int newDist)
@@ -118,9 +112,10 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
     }
 
-    public void openOptions()
-    {
-        
+
+    public void QuitGame(){
+        Application.Quit();
+        Debug.Log("quitting");
     }
 
 }
