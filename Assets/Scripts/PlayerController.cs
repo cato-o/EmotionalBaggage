@@ -375,13 +375,11 @@ namespace EmotionalBaggage.Player
             }
         }
 
-
         private void GameOver()
         {
             isGameOver = true;
             StartCoroutine(Die());
         }
-
 
         private IEnumerator Die()
         {

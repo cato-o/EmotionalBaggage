@@ -7,11 +7,14 @@ public class IntroSetup : MonoBehaviour
 {
 
     [SerializeField]
-    private float introWaitTime= 60;
+    private float introWaitTime= 21;
 
     void Start()
     {
-        StartCoroutine(IntroWait());
+        if(SceneManager.GetActiveScene().name == "IntroScene")
+        {
+            StartCoroutine(IntroWait());
+        }
     }
 
     IEnumerator IntroWait()

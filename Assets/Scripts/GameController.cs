@@ -102,18 +102,13 @@ public class GameController : MonoBehaviour
         congratsText.text = "Congrats! \n You made your flight in time!";
     }
 
-    // public void RestartGame() {
-    //     //UI text says game over
-    //     Debug.Log("game over");
-    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    // }
     IEnumerator Delay(int waitTime)
     {
         yield return new WaitForSeconds(waitTime);
     }
 
-
-    public void QuitGame(){
+    public void QuitGame()
+    {
         Application.Quit();
         Debug.Log("quitting");
     }

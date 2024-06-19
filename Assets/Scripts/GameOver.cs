@@ -20,6 +20,6 @@ public class GameOver : MonoBehaviour
 
     public void ReloadScene() {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("GameScene");
     }
 }
