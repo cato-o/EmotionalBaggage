@@ -20,7 +20,7 @@ public class GameController : MonoBehaviour
     public int distance = 0;
     public float time;
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private int runDist = 1000;
+    [SerializeField] private int runDist = 100;
     [SerializeField] private UnityEvent<int> scoreUpdateEvent;
 
     [SerializeField] private TextMeshProUGUI congratsText;
@@ -102,18 +102,13 @@ public class GameController : MonoBehaviour
         congratsText.text = "Congrats! \n You made your flight in time!";
     }
 
-    // public void RestartGame() {
-    //     //UI text says game over
-    //     Debug.Log("game over");
-    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    // }
     IEnumerator Delay(int waitTime)
     {
         yield return new WaitForSeconds(waitTime);
     }
 
-
-    public void QuitGame(){
+    public void QuitGame()
+    {
         Application.Quit();
         Debug.Log("quitting");
     }

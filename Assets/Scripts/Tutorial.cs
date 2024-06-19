@@ -57,6 +57,7 @@ public class Tutorial : MonoBehaviour
 
     IEnumerator StartGame()
     {
+        Debug.Log("tutorial scene starting");
         yield return new WaitForSeconds(sceneWaitTime);
         SceneManager.LoadScene("GameScene");
     }
