@@ -13,12 +13,14 @@ public class IntroSetup : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().name == "IntroScene")
         {
+            Debug.Log("at intro scene");
             StartCoroutine(IntroWait());
         }
     }
 
     IEnumerator IntroWait()
     {
+        Debug.Log("intro scene loaded");
         yield return new WaitForSeconds(introWaitTime);
         SceneManager.LoadScene("TutorialScene");
     }
