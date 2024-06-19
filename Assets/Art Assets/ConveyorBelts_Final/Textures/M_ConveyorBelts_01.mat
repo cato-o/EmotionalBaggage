@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_ConveyorBelts_01
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 47, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -27,7 +27,7 @@ Material:
   stringTagMap:
     IgnoreProjection: False
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _1st_ShadeColor _1st_ShadeMap
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -192,6 +192,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadingGradeMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -482,7 +486,7 @@ Material:
     - _utsVersionY: 10
     - _utsVersionZ: 0
     m_Colors:
-    - _1st_ShadeColor: {r: 0.44503424, g: 0.35822356, b: 0.4716981, a: 1}
+    - _1st_ShadeColor: {r: 0.26414788, g: 0.08624065, b: 0.3207547, a: 1}
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRingMaskColor: {r: 0, g: 1, b: 0, a: 1}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -499,7 +503,7 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0, b: 0, a: 1}
     - _FirstShadeMaskColor: {r: 0, g: 1, b: 1, a: 1}
-    - _HighColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighColor: {r: 1, g: 1, b: 1, a: 0.38431373}
     - _HighlightMaskColor: {r: 1, g: 1, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
