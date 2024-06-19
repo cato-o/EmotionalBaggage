@@ -50,7 +50,7 @@ public class GameController : MonoBehaviour
     {
         if (currentSceneName == "GameScene")
         {
-            timerText.text = string.Format("{0:0}:{1:00}", Mathf.FloorToInt(timeSinceLevelLoad / 60F), Mathf.FloorToInt(timeSinceLevelLoad - (Mathf.FloorToInt(timeSinceLevelLoad / 60F)) * 60));
+            timerText.text = string.Format("{0:0}:{1:00}", Mathf.FloorToInt(Time.timeSinceLevelLoad / 60F), Mathf.FloorToInt(Time.timeSinceLevelLoad - (Mathf.FloorToInt(Time.timeSinceLevelLoad / 60F)) * 60));
         }
         
         if (currentSceneName == "GameScene" && !isEndless && distance < 0)
