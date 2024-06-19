@@ -282,7 +282,7 @@ public class TileSpawner : MonoBehaviour
         }
         else 
         {
-            return forwardTiles[0]; // pick a straight
+            return (Random.value < 0.5f) ? forwardTiles[0] : forwardTiles[3]; // pick a straight
         }
     }
 
