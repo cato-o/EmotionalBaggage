@@ -41,7 +41,7 @@ public class TileSpawner : MonoBehaviour
 
     private Vector3 currentTileLocation = Vector3.zero;
     private Vector3 currentTileDirection = Vector3.forward;
-    public Vector3 playerDirection = Vector3.forward;
+    private Vector3 playerDirection = Vector3.forward;
     private Vector3 savedTileLocation = Vector3.zero;
     private Vector3 savedTilePlacementScale = Vector3.zero;
     private Vector3 lastObstaclePosition;
@@ -251,7 +251,7 @@ public class TileSpawner : MonoBehaviour
 
         if (obstaclePrefab.tag == "Dodger") {
             float offset;
-            offset = Random.Range(-1.3f, 1.3f);
+            offset = Random.Range(-1.3f, 0);
         
             if (playerDirection == Vector3.right || playerDirection == Vector3.left) {
                 obstacleSpawnPosition.x += offset;
@@ -287,7 +287,6 @@ public class TileSpawner : MonoBehaviour
     }
 
     public void Update() {
-        Debug.Log(playerDirection);
         if (PlayerController.Instance != null) {
             float playerSpeed = PlayerController.Instance.playerSpeed; 
             minimumObstacleSpawnDistance = Mathf.Lerp(minimumObstacleSpawnDistance, playerSpeed, Time.deltaTime);
