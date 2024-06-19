@@ -18,7 +18,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField]
     private GameObject tutorialEnd;
 
-    private float sceneWaitTime= 0.5f;
+    private float sceneWaitTime= 0.1f;
 
 
     private Dictionary<string, GameObject> instructions = new Dictionary<string,GameObject>();
