@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class Tutorial : MonoBehaviour
@@ -8,39 +9,55 @@ public class Tutorial : MonoBehaviour
 
     [SerializeField]
     private GameObject moveInfo;
-    // private TextMeshProUGUI moveText;
     [SerializeField]
     private GameObject turnInfo;
-    // private TextMeshProUGUI turnText;
+    [SerializeField]
+    private GameObject jumpInfo;
+    [SerializeField]
+    private GameObject slideInfo;
+    [SerializeField]
+    private GameObject tutorialEnd;
+
+    private float sceneWaitTime= 0.5f;
+
+
+    private Dictionary<string, GameObject> instructions = new Dictionary<string,GameObject>();
+
+    void Start()
+    {
+        instructions.Add("Move", moveInfo);
+        instructions.Add("Turn", turnInfo);
+        instructions.Add("Jump", jumpInfo);
+        instructions.Add("Slide", slideInfo);
+        instructions.Add("TutorialEnd", tutorialEnd);
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
+        string tag = other.tag;
         Debug.Log("collided with: " + other.tag);
-        if (other.tag == "Move")
+        if(instructions.ContainsKey(other.tag))
         {
-            moveInfo.SetActive(true);
-            // moveText.enabled = true;
+            // Debug.Log(other.tag);
+            instructions[other.tag].SetActive(true);
         }
-        
-        if (other.tag == "Turn")
+        else if (other.tag == "SwitchScene")
         {
-            turnInfo.SetActive(true);
-            // turnText.enabled = true;
+            StartCoroutine(StartGame());
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("left collision with: " + other.tag);
-        if (other.tag == "Move")
+        if(instructions.ContainsKey(other.tag))
         {
-            moveInfo.SetActive(false);
-            // moveText.enabled = false;
+            instructions[other.tag].SetActive(false);
         }
+    }
 
-        if (other.tag == "Turn")
-        {
-            turnInfo.SetActive(false);
-            // turnText.enabled = false;
-        }
+    IEnumerator StartGame()
+    {
+        yield return new WaitForSeconds(sceneWaitTime);
+        SceneManager.LoadScene(2);
     }
 }
