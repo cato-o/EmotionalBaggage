@@ -58,6 +58,6 @@ public class Tutorial : MonoBehaviour
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(sceneWaitTime);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("GameScene");
     }
 }

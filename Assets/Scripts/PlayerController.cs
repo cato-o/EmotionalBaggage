@@ -20,16 +20,16 @@ namespace EmotionalBaggage.Player
         private CinemachineVirtualCamera virtualCamera;
 
         [SerializeField]
-        private float initialPlayerSpeed = 4f;
+        private float initialPlayerSpeed = 10f;
 
         [SerializeField]
-        private float maximumPlayerSpeed = 30f;
+        private float maximumPlayerSpeed = 40f;
 
         [SerializeField]
         private float playerSpeedIncreaseRate = .1f;
 
         [SerializeField]
-        private float jumpHeight = 1.0f;
+        private float jumpHeight = 1.25f;
 
         [SerializeField]
         private float initialGravityValue = -9.81f;

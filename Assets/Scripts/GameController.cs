@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -12,22 +13,20 @@ public class GameController : MonoBehaviour
     bool firstRun = true;
     public bool isEndless = false;
 
+    [SerializeField] private Button storyMode;
+    [SerializeField] private Button endlessMode;
+    [SerializeField] private Button creditMode;
     public int distance = 0;
     public float time;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private int runDist = 1000;
+    [SerializeField] private UnityEvent<int> scoreUpdateEvent;
 
-    [SerializeField]
-    private TextMeshProUGUI timerText;
-
-    [SerializeField]
-    private int runDist = 100;
-    [SerializeField]
-    private TextMeshProUGUI congratsText;
-    [SerializeField]
-    private UnityEvent<int> scoreUpdateEvent;
+    [SerializeField] private TextMeshProUGUI congratsText;
 
     void Awake()
     {
-        // DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -36,14 +35,13 @@ public class GameController : MonoBehaviour
         currentScene = SceneManager.GetActiveScene();
         currentSceneName = currentScene.name;
 
-        if (currentSceneName == "IntroScene")
-        {
-            // run tutorialsetup
-            firstRun = false;
-        }
-        else if (currentSceneName == "EndScene")
+        if (currentSceneName == "EndScene")
         {
             Invoke("PlayEnding", 3);
+        }
+        if (GameObject.Find("Timer") != null)
+        {
+            timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
         }
     }
 
@@ -55,22 +53,54 @@ public class GameController : MonoBehaviour
             // add distance score, if isEndless, distance counts up. otherwise counts down
         }
         
-        if (distance >= runDist)
+        if (currentSceneName == "GameScene" && !isEndless && distance < 0)
         {
             Debug.Log(distance + "switched to ending");
-            SwitchToEnding();
+            LoadEnding();
         }
+    }
+
+    public void LoadStory()
+    {
+        isEndless = false;
+        SceneManager.LoadScene("IntroScene");
+    }
+
+    public void LoadEndless()
+    {
+        Debug.Log("load endless");
+        isEndless = true;
+        SceneManager.LoadScene("GameScene");
+    }
+
+    void LoadEnding() 
+    {
+        SceneManager.LoadScene("EndScene");
+    }
+
+    public void LoadCredits()
+    {
+        Debug.Log("load credits");
+        // add credits logic here
     }
 
     public void UpdateDistance(int newDist)
     {
-        distance = newDist;
+        if (currentSceneName == "TutorialScene")
+        {
+            return;
+        }
+        else if (isEndless)
+        {
+            distance = newDist;
+        }
+        else
+        {
+            distance = runDist - newDist;
+        }
+
         scoreUpdateEvent.Invoke(distance);
         // Debug.Log("updated distance: " + distance);
-    }
-    void SwitchToEnding() 
-    {
-        SceneManager.LoadScene(3);
     }
 
     void PlayEnding()
@@ -78,11 +108,11 @@ public class GameController : MonoBehaviour
         congratsText.text = "Congrats! \n You made your flight in time!";
     }
 
-    public void RestartGame() {
-        //UI text says game over
-        Debug.Log("game over");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    // public void RestartGame() {
+    //     //UI text says game over
+    //     Debug.Log("game over");
+    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    // }
     IEnumerator Delay(int waitTime)
     {
         yield return new WaitForSeconds(waitTime);

@@ -17,6 +17,6 @@ public class IntroSetup : MonoBehaviour
     IEnumerator IntroWait()
     {
         yield return new WaitForSeconds(introWaitTime);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("TutorialScene");
     }
 }
