@@ -12,6 +12,10 @@ TagManager:
   - Move
   - Turn
   - Dodger
+  - Jump
+  - Slide
+  - SwitchScene
+  - TutorialEnd
   layers:
   - Default
   - TransparentFX
