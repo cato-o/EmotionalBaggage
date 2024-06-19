@@ -1015,11 +1015,10 @@ MonoBehaviour:
 
 
     The team members were Ooha Reddy, Yingjie Wang, Bryan
-    Skedgell, Elizabeth Metger, Pepi Valkov, Moises Granados, and Quincy Linder.
+    Skedgell, Elizabeth Metger, and Pepi Valkov.
 
 
-    Audio
-    assets are from LittleRobotSoundFactory.'
+    Audio assets are from LittleRobotSoundFactory.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45e2cbed8039e40b1bfd87f8fed9580c, type: 2}
   m_sharedMaterial: {fileID: -1678681013329442426, guid: 45e2cbed8039e40b1bfd87f8fed9580c, type: 2}
