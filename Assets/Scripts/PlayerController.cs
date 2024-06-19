@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using Cinemachine;
 
@@ -384,7 +385,20 @@ namespace EmotionalBaggage.Player
         private void GameOver()
         {
             isGameOver = true;
-            StartCoroutine(Die());
+            if (SceneManager.GetActiveScene().name == "TutorialScene")
+            {
+                gameObject.SetActive(false);
+                Invoke("TutorialRestart", 1.5f);
+            }
+            else
+            {
+                StartCoroutine(Die());
+            }
+        }
+
+        private void TutorialRestart()
+        {
+            SceneManager.LoadScene("TutorialScene");
         }
 
         private IEnumerator Die()
@@ -395,8 +409,7 @@ namespace EmotionalBaggage.Player
                 animator.Play(dyingAnimationId);
                 yield return new WaitForSeconds(dieAnimationClip.length);
             }
-            // Wait until the player is grounded before disabling the game object
-            // yield return new WaitUntil(() => isGrounded());
+
             gameObject.SetActive(false);
             gameOverEvent.Invoke((int)score);
         }
