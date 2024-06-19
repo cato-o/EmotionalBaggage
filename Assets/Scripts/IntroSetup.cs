@@ -11,7 +11,8 @@ public class IntroSetup : MonoBehaviour
 
     void Start()
     {
-        if(SceneManager.GetActiveScene().name == "IntroScene")
+        Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
+        if(SceneManager.GetActiveScene().name == "StartScene")
         {
             Debug.Log("at intro scene");
             StartCoroutine(IntroWait());
