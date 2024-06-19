@@ -16,7 +16,7 @@ namespace EmotionalBaggage.Player
         private GameController gameController;
 
         public float playerSpeed;
-        
+
         [SerializeField]
         private CinemachineVirtualCamera virtualCamera;
 
@@ -77,6 +77,7 @@ namespace EmotionalBaggage.Player
         private int fallingAnimationId;
         private bool sliding = false;
         private float score = 0;
+        private float notGroundedTimer = 0f;
         private bool isFalling = false;
         private float fallTimer = 0f;
         private float maxFallTime = 2f;
@@ -102,7 +103,8 @@ namespace EmotionalBaggage.Player
         private bool isHorizHeld;
         private Vector3 horizontalMove;
 
-        private void Awake() {
+        private void Awake()
+        {
             gameController = GameObject.Find("GameController").GetComponent<GameController>();
 
             playerInput = GetComponent<PlayerInput>();
@@ -116,10 +118,11 @@ namespace EmotionalBaggage.Player
             turnAction = playerInput.actions["Turn"];
             jumpAction = playerInput.actions["Jump"];
             slideAction = playerInput.actions["Slide"];
-            
+
         }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             moveAction.performed += PlayerMove;
             moveAction.canceled += HorizReleased;
             turnAction.performed += PlayerTurn;
@@ -127,8 +130,9 @@ namespace EmotionalBaggage.Player
             jumpAction.performed += PlayerJump;
         }
 
-        private void OnDisable() {
-            moveAction.performed -= PlayerMove; 
+        private void OnDisable()
+        {
+            moveAction.performed -= PlayerMove;
             moveAction.canceled -= HorizReleased;
             turnAction.performed -= PlayerTurn;
             slideAction.performed -= PlayerSlide;
@@ -137,7 +141,8 @@ namespace EmotionalBaggage.Player
 
         private void PlayerMove(InputAction.CallbackContext context)
         {
-            if (!isGameOver && (!onRamp)){
+            if (!isGameOver && (!onRamp))
+            {
                 Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
                 if (turnBlock.HasValue)
                 {
@@ -165,7 +170,8 @@ namespace EmotionalBaggage.Player
 
         private void PlayerTurn(InputAction.CallbackContext context)
         {
-            if (!isGameOver){
+            if (!isGameOver)
+            {
                 Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
                 if (!turnPosition.HasValue)
                 {
@@ -257,36 +263,42 @@ namespace EmotionalBaggage.Player
         }
 
         private void Update()
-        {  
+        {
             Debug.Log(isGrounded());
-            if (isGameOver && isFalling){
+            if (isGameOver && isFalling)
+            {
                 animator.Play(fallingAnimationId);
             }
-            
+
             if (!isGrounded(20f))
             {
-                if (!isFalling)
+                notGroundedTimer += Time.deltaTime;
+                if (notGroundedTimer >= 2f)
                 {
-                    isFalling = true;
-                    fallTimer = 0f;
+                    if (!isFalling)
+                    {
+                        isFalling = true;
+                        fallTimer = 0f;
+                    }
+                    else
+                    {
+                        fallTimer += Time.deltaTime;
+                        if (fallTimer != 0)
+                        {
+                            isGameOver = true;
+                        }
+                        if (fallTimer >= maxFallTime)
+                        {
+                            GameOver();
+                            return;
+                        }
+                    }
                 }
                 else
                 {
-                    fallTimer += Time.deltaTime;
-                    if (fallTimer != 0)
-                    {
-                        isGameOver = true;
-                    }
-                    if (fallTimer >= maxFallTime)
-                    {
-                        GameOver();
-                        return;
-                    }
+                    notGroundedTimer = 0f;
+                    isFalling = false;
                 }
-            }
-            else
-            {
-                isFalling = false;
             }
 
             // Keep updating score if not game over
@@ -298,8 +310,10 @@ namespace EmotionalBaggage.Player
             }
 
             // Continue moving horizontally and forward even after game over, but stop forward movement if dying animation has started
-            if (!isGameOver || isFalling || playerVelocity.y != 0) {
-                if (!isDying) {
+            if (!isGameOver || isFalling || playerVelocity.y != 0)
+            {
+                if (!isDying)
+                {
                     controller.Move(transform.forward * playerSpeed * Time.deltaTime);
                 }
             }
@@ -338,7 +352,7 @@ namespace EmotionalBaggage.Player
                 }
             }
 
-           CheckRamp();
+            CheckRamp();
         }
 
         private bool isGrounded(float length = .02f)
@@ -362,18 +376,20 @@ namespace EmotionalBaggage.Player
         {
             if (Physics.CheckSphere(transform.position, .1f, rampLayer))
             {
-                if (!onRamp){
+                if (!onRamp)
+                {
                     onRamp = true;
                     beforeVelocity = playerVelocity;
                     transform.Rotate(30f, 0f, 0f, Space.Self);
                     worldScene.transform.Rotate(-30f, 0f, 0f, Space.Self);
-                    
+
                 }
                 playerVelocity = beforeVelocity;
             }
             else
             {
-                if (onRamp){
+                if (onRamp)
+                {
                     playerVelocity = beforeVelocity;
                     transform.Rotate(-30f, 0f, 0f, Space.Self);
                     worldScene.transform.Rotate(30f, 0f, 0f, Space.Self);
@@ -413,7 +429,7 @@ namespace EmotionalBaggage.Player
             gameObject.SetActive(false);
             gameOverEvent.Invoke((int)score);
         }
-        
+
         private IEnumerator WaitUntilGroundedThenDie()
         {
             yield return new WaitUntil(() => isGrounded());
@@ -438,7 +454,7 @@ namespace EmotionalBaggage.Player
                 StartCoroutine(WaitUntilGroundedThenDie());
             }
         }
-        
+
 
         private IEnumerator ChangeCameraOffsetSmoothly(float targetOffset)
         {
