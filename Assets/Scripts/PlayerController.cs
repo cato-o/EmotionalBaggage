@@ -80,6 +80,8 @@ namespace EmotionalBaggage.Player
         private float offsetTransitionSpeed = 0.7f;
         private bool isGameOver = false;
         private bool onRamp = false;
+        private bool isDying = false;
+        
 
 
         [SerializeField]
@@ -251,7 +253,6 @@ namespace EmotionalBaggage.Player
             
             if (!isGrounded(20f))
             {
-
                 if (!isFalling)
                 {
                     isFalling = true;
@@ -276,19 +277,21 @@ namespace EmotionalBaggage.Player
                 isFalling = false;
             }
 
-            //if game done, stop the score and don't let the player move
+            // Keep updating score if not game over
             if (!isGameOver)
             {
                 score += playerSpeed * Time.deltaTime;
                 scoreUpdateEvent.Invoke((int)score);
             }
 
-            if (!isGameOver || isFalling) {
-                controller.Move(transform.forward * playerSpeed * Time.deltaTime);
+            // Continue moving horizontally and forward even after game over, but stop forward movement if dying animation has started
+            if (!isGameOver || isFalling || playerVelocity.y != 0) {
+                if (!isDying) {
+                    controller.Move(transform.forward * playerSpeed * Time.deltaTime);
+                }
             }
-        
 
-            if (isHorizHeld && horizontalMove != null)
+            if (isHorizHeld && horizontalMove != null && !isDying)
             {
                 controller.Move(horizontalMove);
             }
@@ -323,8 +326,6 @@ namespace EmotionalBaggage.Player
             }
 
             CheckRamp();
-            
-
         }
 
         private bool isGrounded(float length = .02f)
@@ -372,13 +373,16 @@ namespace EmotionalBaggage.Player
         {
             if (!isFalling)
             {
+                isDying = true; // Set the flag to indicate dying animation has started
                 animator.Play(dyingAnimationId);
                 yield return new WaitForSeconds(dieAnimationClip.length);
             }
+            // Wait until the player is grounded before disabling the game object
+            yield return new WaitUntil(() => isGrounded());
             gameObject.SetActive(false);
             gameOverEvent.Invoke((int)score);
         }
-
+        
         private IEnumerator WaitUntilGroundedThenDie()
         {
             yield return new WaitUntil(() => isGrounded());
