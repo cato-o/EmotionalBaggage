@@ -8,12 +8,17 @@ public class IntroSetup : MonoBehaviour
 
     [SerializeField]
     private float introWaitTime= 21;
+    bool firstLoad = true;
+    // void Start()
+    // {
+    // }
 
-    void Start()
-    {
+    void Update() {
         Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
-        if(SceneManager.GetActiveScene().name == "StartScene")
+
+        if(SceneManager.GetActiveScene().name == "IntroScene" && firstLoad)
         {
+            firstLoad = false;
             Debug.Log("at intro scene");
             StartCoroutine(IntroWait());
         }
