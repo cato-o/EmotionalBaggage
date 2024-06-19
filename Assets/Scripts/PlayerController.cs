@@ -396,7 +396,7 @@ namespace EmotionalBaggage.Player
                 yield return new WaitForSeconds(dieAnimationClip.length);
             }
             // Wait until the player is grounded before disabling the game object
-            yield return new WaitUntil(() => isGrounded());
+            // yield return new WaitUntil(() => isGrounded());
             gameObject.SetActive(false);
             gameOverEvent.Invoke((int)score);
         }
