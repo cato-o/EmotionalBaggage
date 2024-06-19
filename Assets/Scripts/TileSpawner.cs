@@ -249,7 +249,7 @@ public class TileSpawner : MonoBehaviour
 
         if (obstaclePrefab.tag == "Dodger") {
             float offset;
-            offset = Random.Range(-1.0f, 1.0f);
+            offset = Random.Range(-1.3f, 1.3f);
         
             if (playerDirection == Vector3.right || playerDirection == Vector3.left) {
                 obstacleSpawnPosition.x += offset;
