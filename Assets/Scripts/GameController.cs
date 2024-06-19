@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private Button storyMode;
     [SerializeField] private Button endlessMode;
-    [SerializeField] private Button creditMode;
+    [SerializeField] private Button optionMenu;
     public int distance = 0;
     public float time;
     [SerializeField] private TextMeshProUGUI timerText;
@@ -116,6 +116,11 @@ public class GameController : MonoBehaviour
     IEnumerator Delay(int waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+    }
+
+    public void openOptions()
+    {
+        
     }
 
 }
