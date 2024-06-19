@@ -20,7 +20,8 @@ public class GameController : MonoBehaviour
     public int distance = 0;
     public float time;
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private int runDist = 100;
+    [SerializeField] private TextMeshProUGUI distanceText;
+    [SerializeField] private int runDist = 500;
     [SerializeField] private UnityEvent<int> scoreUpdateEvent;
 
     [SerializeField] private TextMeshProUGUI congratsText;
@@ -33,23 +34,17 @@ public class GameController : MonoBehaviour
     void Start()
     {
         // Debug.Log("first run: " + firstRun);
-        currentScene = SceneManager.GetActiveScene();
-        currentSceneName = currentScene.name;
-
-        if (currentSceneName == "EndScene")
-        {
-            Invoke("PlayEnding", 3);
-        }
-        if (GameObject.Find("Timer") != null)
-        {
-            timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
-        }
     }
 
     void Update()
     {
+        currentScene = SceneManager.GetActiveScene();
+        currentSceneName = currentScene.name;
+        
         if (currentSceneName == "GameScene")
         {
+            distanceText = GameObject.Find("Distance").GetComponent<TextMeshProUGUI>();
+            timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
             timerText.text = string.Format("{0:0}:{1:00}", Mathf.FloorToInt(Time.timeSinceLevelLoad / 60F), Mathf.FloorToInt(Time.timeSinceLevelLoad - (Mathf.FloorToInt(Time.timeSinceLevelLoad / 60F)) * 60));
         }
         
@@ -58,6 +53,12 @@ public class GameController : MonoBehaviour
             Debug.Log(distance + "switched to ending");
             LoadEnding();
         }
+
+        if (currentSceneName == "EndScene")
+        {
+            Invoke("PlayEnding", 3);
+        }
+
     }
 
     public void LoadStory()
@@ -93,10 +94,15 @@ public class GameController : MonoBehaviour
             distance = runDist - newDist;
         }
 
-        scoreUpdateEvent.Invoke(distance);
+        UpdateDistanceText(distance);
+        // scoreUpdateEvent.Invoke(distance);
         // Debug.Log("updated distance: " + distance);
     }
 
+    public void UpdateDistanceText(int distance)
+    {
+        distanceText.text = "Distance: " + distance.ToString() + "m";
+    }
     void PlayEnding()
     {
         congratsText.text = "Congrats! \n You made your flight in time!";

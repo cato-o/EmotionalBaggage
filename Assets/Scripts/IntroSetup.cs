@@ -14,7 +14,7 @@ public class IntroSetup : MonoBehaviour
     // }
 
     void Update() {
-        Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
+        // Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
 
         if(SceneManager.GetActiveScene().name == "IntroScene" && firstLoad)
         {
