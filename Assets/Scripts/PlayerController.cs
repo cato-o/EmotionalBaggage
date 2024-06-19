@@ -12,6 +12,7 @@ namespace EmotionalBaggage.Player
     public class PlayerController : MonoBehaviour
     {
         public static PlayerController Instance;
+        private GameController gameController;
 
         public float playerSpeed;
         
@@ -92,14 +93,16 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private UnityEvent<int> gameOverEvent;
 
-        [SerializeField]
-        private UnityEvent<int> scoreUpdateEvent;
+        // [SerializeField]
+        // private UnityEvent<int> scoreUpdateEvent;
 
         private Vector3? lastTurnTilePosition = null;
         private bool isHorizHeld;
         private Vector3 horizontalMove;
 
         private void Awake() {
+            gameController = GameObject.Find("GameController").GetComponent<GameController>();
+
             playerInput = GetComponent<PlayerInput>();
             controller = GetComponent<CharacterController>();
 
@@ -283,7 +286,8 @@ namespace EmotionalBaggage.Player
             if (!isGameOver)
             {
                 score += playerSpeed * Time.deltaTime;
-                scoreUpdateEvent.Invoke((int)score);
+                gameController.UpdateDistance((int)score);
+                // scoreUpdateEvent.Invoke((int)score);
             }
 
             // Continue moving horizontally and forward even after game over, but stop forward movement if dying animation has started
