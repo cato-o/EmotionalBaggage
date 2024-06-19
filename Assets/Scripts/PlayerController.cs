@@ -257,6 +257,7 @@ namespace EmotionalBaggage.Player
 
         private void Update()
         {  
+            Debug.Log(isGrounded());
             if (isGameOver && isFalling){
                 animator.Play(fallingAnimationId);
             }
