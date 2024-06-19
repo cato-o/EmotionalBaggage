@@ -14,8 +14,6 @@ namespace EmotionalBaggage.Player
         public static PlayerController Instance;
         private GameController gameController;
 
-        public TileSpawner tileSpawnerInstance;
-
         public float playerSpeed;
         
         [SerializeField]
@@ -42,6 +40,7 @@ namespace EmotionalBaggage.Player
         private LayerMask turnLayer;
         [SerializeField]
         private LayerMask rampLayer;
+
         [SerializeField]
         private LayerMask obstacleLayer;
         [SerializeField]
@@ -57,10 +56,13 @@ namespace EmotionalBaggage.Player
         private AnimationClip dieAnimationClip;
         [SerializeField]
         private AnimationClip fallAnimationClip;
+        [SerializeField]
+        private GameObject worldScene;
         private float gravity;
         private float horizontalSpeed;
         private Vector3 movementDirection = Vector3.forward;
         private Vector3 playerVelocity;
+        private Vector3 beforeVelocity;
         private PlayerInput playerInput;
         private InputAction turnAction;
         private InputAction jumpAction;
@@ -133,7 +135,7 @@ namespace EmotionalBaggage.Player
 
         private void PlayerMove(InputAction.CallbackContext context)
         {
-            if (!isGameOver && !onRamp){
+            if (!isGameOver && (!onRamp)){
                 Vector3? turnBlock = CheckTurn(context.ReadValue<float>());
                 if (turnBlock.HasValue)
                 {
@@ -209,7 +211,7 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerSlide(InputAction.CallbackContext context)
         {
-            if (!isGameOver && !onRamp)
+            if (!isGameOver && (!onRamp))
             {
                 if (!sliding && isGrounded())
                 {
@@ -238,7 +240,7 @@ namespace EmotionalBaggage.Player
         }
         private void PlayerJump(InputAction.CallbackContext context)
         {
-            if (!isGameOver && !onRamp)
+            if (!isGameOver && (!onRamp))
             {
                 if (isGrounded())
                 {
@@ -249,7 +251,7 @@ namespace EmotionalBaggage.Player
         }
 
         private void Update()
-        {   
+        {  
             if (isGameOver && isFalling){
                 animator.Play(fallingAnimationId);
             }
@@ -329,7 +331,7 @@ namespace EmotionalBaggage.Player
                 }
             }
 
-            CheckRamp();
+           CheckRamp();
         }
 
         private bool isGrounded(float length = .02f)
@@ -353,18 +355,26 @@ namespace EmotionalBaggage.Player
         {
             if (Physics.CheckSphere(transform.position, .1f, rampLayer))
             {
-                // playerVelocity = new Vector3 (tileSpawnerInstance.playerDirection.x, -1, tileSpawnerInstance.playerDirection.z) * playerSpeed;
-               // Quaternion transform.rotation.x
                 if (!onRamp){
                     onRamp = true;
+                    beforeVelocity = playerVelocity;
+                    transform.Rotate(30f, 0f, 0f, Space.Self);
+                    worldScene.transform.Rotate(-30f, 0f, 0f, Space.Self);
                     
                 }
+                playerVelocity = beforeVelocity;
             }
             else
             {
+                if (onRamp){
+                    playerVelocity = beforeVelocity;
+                    transform.Rotate(-30f, 0f, 0f, Space.Self);
+                    worldScene.transform.Rotate(30f, 0f, 0f, Space.Self);
+                }
                 onRamp = false;
             }
         }
+
 
         private void GameOver()
         {
