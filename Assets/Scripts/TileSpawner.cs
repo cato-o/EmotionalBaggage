@@ -14,6 +14,8 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private GameObject startingTile;
     [SerializeField]
+    private GameObject decoyTile;
+    [SerializeField]
     private GameObject startingRamp;
     [SerializeField]
     private List<GameObject> turnTiles;
@@ -93,7 +95,7 @@ public class TileSpawner : MonoBehaviour
         // spawn decoy tiles
         for (int i = 0; i < 15; ++i) {
             decoy = true;
-            SpawnTile(startingTile.GetComponent<Tile>());
+            SpawnTile(decoyTile.GetComponent<Tile>());
             decoy = false;
         }
         
@@ -222,7 +224,7 @@ public class TileSpawner : MonoBehaviour
         // spawn decoy tiles
         for (int i = 0; i < 15; ++i) {
             decoy = true;
-            SpawnTile(startingTile.GetComponent<Tile>());
+            SpawnTile(decoyTile.GetComponent<Tile>());
             decoy = false;
         }
 
