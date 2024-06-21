@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7602181854675208718}
-  m_Layer: 8
+  - component: {fileID: 4567512808486443513}
+  m_Layer: 15
   m_Name: Dynamite
   m_TagString: Dodger
   m_Icon: {fileID: 0}
@@ -33,6 +34,27 @@ Transform:
   - {fileID: 3057278939175942748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4567512808486443513
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7602181854675208719}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.34264755, y: 1.0827899, z: 0.35657883}
+  m_Center: {x: 0.0084581375, y: 0.50237155, z: -0.025951385}
 --- !u!1 &8989298338657882389
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,7 +66,7 @@ GameObject:
   - component: {fileID: 3057278939175942748}
   - component: {fileID: 4889593244699626673}
   - component: {fileID: 744880755172655460}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,44 +227,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e5d1b37d1a3e48947a39b38442e77e4b, type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e5d1b37d1a3e48947a39b38442e77e4b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7306260627108054557}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5d1b37d1a3e48947a39b38442e77e4b, type: 3}
 --- !u!4 &8353485949513301267 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5d1b37d1a3e48947a39b38442e77e4b, type: 3}
   m_PrefabInstance: {fileID: 8387728129212914424}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8693736851867215785 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e5d1b37d1a3e48947a39b38442e77e4b, type: 3}
-  m_PrefabInstance: {fileID: 8387728129212914424}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &7306260627108054557
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8693736851867215785}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.82, y: 0.22, z: 0.24}
-  m_Center: {x: 0.00000022351786, y: 0.000001586974, z: 0}

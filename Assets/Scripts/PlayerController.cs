@@ -47,6 +47,10 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private LayerMask airObstacleLayer;
         [SerializeField]
+        private LayerMask splitObstacleLayer;
+        [SerializeField]
+        private LayerMask bombObstacleLayer;
+        [SerializeField]
         private Animator animator;
         [SerializeField]
         private float initialHorizontalSpeed = 2f;
@@ -56,7 +60,11 @@ namespace EmotionalBaggage.Player
         [SerializeField]
         private AnimationClip dieAnimationClip;
         [SerializeField]
-        private AnimationClip fallAnimationClip;
+        private AnimationClip fallingAnimationClip;
+        [SerializeField]
+        private AnimationClip splitAnimationClip;
+        [SerializeField]
+        private AnimationClip bombAnimationClip;
         [SerializeField]
         private GameObject worldScene;
         private float gravity;
@@ -75,6 +83,8 @@ namespace EmotionalBaggage.Player
         private int slidingAnimationId;
         private int dyingAnimationId;
         private int fallingAnimationId;
+        private int splitAnimationId;
+        private int bombAnimationId;
         private bool sliding = false;
         private float score = 0;
         private bool isFalling = false;
@@ -85,10 +95,15 @@ namespace EmotionalBaggage.Player
         private bool isGameOver = false;
         private bool onRamp = false;
         private bool isDying = false;
+        private bool split = false;
+        private bool bomb = false;
 
         public AudioSource jumpSound;
         public AudioSource dizzySound;
         public AudioSource duckSound;
+        public AudioSource splitSound;
+        public AudioSource bombSound;
+        public AudioSource fallingSound;
 
         [SerializeField]
         private UnityEvent<Vector3> turnEvent;
@@ -104,7 +119,8 @@ namespace EmotionalBaggage.Player
         private Vector3 horizontalMove;
 
         private float lastRampTime = 0f; 
-        private float rampProtectionTime = 2f;
+        private float rampProtectionTime = 2.5f;
+        private float startTime;
 
         private void Awake() {
             gameController = GameObject.Find("GameController").GetComponent<GameController>();
@@ -115,6 +131,8 @@ namespace EmotionalBaggage.Player
             slidingAnimationId = Animator.StringToHash("Sliding");
             dyingAnimationId = Animator.StringToHash("Dying");
             fallingAnimationId = Animator.StringToHash("Falling");
+            splitAnimationId = Animator.StringToHash("Split");
+            bombAnimationId = Animator.StringToHash("Bomb");
 
             moveAction = playerInput.actions["Move"];
             turnAction = playerInput.actions["Turn"];
@@ -156,6 +174,7 @@ namespace EmotionalBaggage.Player
         }
         private void Start()
         {
+            startTime = Time.time;
             virtualCamera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z = -2.44f;
             gravity = initialGravityValue;
             playerSpeed = initialPlayerSpeed;
@@ -269,33 +288,34 @@ namespace EmotionalBaggage.Player
         private void Update()
         {  
             Debug.Log(isGrounded());
-            if (isGameOver && isFalling){
-                animator.Play(fallingAnimationId);
-            }
             
             if (!isGrounded(20f))
             {
-                if (!isFalling)
+                if ((!isFalling) &&
+                (!isDying) &&
+                (Time.time - lastRampTime > rampProtectionTime) &&
+                (Time.time - startTime > 3f))
                 {
-                    if (Time.time - lastRampTime > rampProtectionTime)
-                    {
                         isFalling = true;
-                        fallTimer = 0f;
-                    }
-                }
-                else
-                {
-                    fallTimer += Time.deltaTime;
-                    if (fallTimer != 0)
-                    {
-                        isGameOver = true;
-                    }
-                    if (fallTimer >= maxFallTime)
-                    {
                         GameOver();
                         return;
-                    }
                 }
+                //         fallTimer = 0f;
+                //     }
+                // }
+                // else
+                // {
+                //     fallTimer += Time.deltaTime;
+                //     if (fallTimer != 0)
+                //     {
+                //         isGameOver = true;
+                //     }
+                //     if (fallTimer >= maxFallTime)
+                //     {
+                //         GameOver();
+                //         return;
+                //     }
+                // }
             }
             else
             {
@@ -420,12 +440,32 @@ namespace EmotionalBaggage.Player
             if (!isFalling)
             {
                 isDying = true; // Set the flag to indicate dying animation has started
-                dizzySound.pitch = playerSpeed / initialPlayerSpeed;
-                dizzySound.Play();
-                animator.Play(dyingAnimationId);
-                yield return new WaitForSeconds(dieAnimationClip.length);
-            }
+                if (split){
+                    splitSound.pitch = playerSpeed / initialPlayerSpeed;
+                    splitSound.Play();
+                    animator.Play(splitAnimationId);
+                    yield return new WaitForSeconds(splitAnimationClip.length);
 
+                }
+                else if (bomb) {
+                    bombSound.pitch = playerSpeed / initialPlayerSpeed;
+                    bombSound.Play();
+                    animator.Play(bombAnimationId);
+                    yield return new WaitForSeconds(bombAnimationClip.length);
+                }
+                else {
+                    dizzySound.pitch = playerSpeed / initialPlayerSpeed;
+                    dizzySound.Play();
+                    animator.Play(dyingAnimationId);
+                    yield return new WaitForSeconds(dieAnimationClip.length);
+                }
+            }
+            else {
+                fallingSound.pitch = playerSpeed / initialPlayerSpeed;
+                fallingSound.Play();
+                animator.Play(fallingAnimationId);
+                yield return new WaitForSeconds(fallingAnimationClip.length);
+            }
             gameObject.SetActive(false);
             gameOverEvent.Invoke((int)score);
         }
@@ -433,7 +473,7 @@ namespace EmotionalBaggage.Player
         private IEnumerator WaitUntilGroundedThenDie()
         {
             float startTime = Time.time;
-            float maxWaitTime = 2f;
+            float maxWaitTime = 1f;
 
             while (!isGrounded())
             {
@@ -455,15 +495,33 @@ namespace EmotionalBaggage.Player
         {
             if (sliding)
             {
-                if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0)
+                if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0 ||
+                ((1 << hit.collider.gameObject.layer) & splitObstacleLayer) != 0 ||
+                ((1 << hit.collider.gameObject.layer) & bombObstacleLayer) != 0)
                 {
+                    if (((1 << hit.collider.gameObject.layer) & splitObstacleLayer) != 0){
+                        split = true;
+                    }
+                    else if (((1 << hit.collider.gameObject.layer) & bombObstacleLayer) != 0){
+                        bomb = true;
+                    }
                     isGameOver = true;
                     StartCoroutine(ChangeCameraOffsetSmoothly(-7f));
                     StartCoroutine(WaitUntilGroundedThenDie());
                 }
             }
-            else if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0 || ((1 << hit.collider.gameObject.layer) & airObstacleLayer) != 0)
+            else if (((1 << hit.collider.gameObject.layer) & obstacleLayer) != 0 ||
+            ((1 << hit.collider.gameObject.layer) & airObstacleLayer) != 0 ||
+            ((1 << hit.collider.gameObject.layer) & splitObstacleLayer) != 0 ||
+            ((1 << hit.collider.gameObject.layer) & bombObstacleLayer) != 0)
             {
+                if (((1 << hit.collider.gameObject.layer) & splitObstacleLayer) != 0){
+                    split = true;
+                }
+                else if (((1 << hit.collider.gameObject.layer) & bombObstacleLayer) != 0){
+                    bomb = true;
+                    hit.collider.gameObject.SetActive(false);
+                }
                 isGameOver = true;
                 StartCoroutine(ChangeCameraOffsetSmoothly(-7f));
                 StartCoroutine(WaitUntilGroundedThenDie());

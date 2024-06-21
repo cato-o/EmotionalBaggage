@@ -54,10 +54,10 @@ public class GameController : MonoBehaviour
             LoadEnding();
         }
 
-        if (currentSceneName == "EndScene")
-        {
-            Invoke("PlayEnding", 3);
-        }
+        // if (currentSceneName == "EndScene")
+        // {
+        //     Invoke("PlayEnding", 3);
+        // }
 
     }
 
@@ -103,10 +103,10 @@ public class GameController : MonoBehaviour
     {
         distanceText.text = "Distance: " + distance.ToString() + "m";
     }
-    void PlayEnding()
-    {
-        congratsText.text = "Congrats! \n You made your flight in time!";
-    }
+    // void PlayEnding()
+    // {
+    //     congratsText.text = "Congrats! \n You made your flight in time!";
+    // }
 
     IEnumerator Delay(int waitTime)
     {
