@@ -6,28 +6,33 @@ using UnityEngine.SceneManagement;
 public class IntroSetup : MonoBehaviour
 {
 
-    [SerializeField]
-    private float introWaitTime= 21;
-    bool firstLoad = true;
-    // void Start()
-    // {
+    // [SerializeField]
+    // private float introWaitTime= 21;
+    // bool firstLoad = true;
+    // // void Start()
+    // // {
+    // // }
+
+    // void Update() {
+    //     // Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
+
+    //     if(SceneManager.GetActiveScene().name == "IntroScene" && firstLoad)
+    //     {
+    //         firstLoad = false;
+    //         Debug.Log("at intro scene");
+    //         StartCoroutine(IntroWait());
+    //     }
     // }
 
-    void Update() {
-        // Debug.Log("Intro scene started:" + SceneManager.GetActiveScene().name);
+    // IEnumerator IntroWait()
+    // {
+    //     Debug.Log("intro scene loaded");
+    //     yield return new WaitForSeconds(introWaitTime);
+    //     SceneManager.LoadScene("TutorialScene");
+    // } 
 
-        if(SceneManager.GetActiveScene().name == "IntroScene" && firstLoad)
-        {
-            firstLoad = false;
-            Debug.Log("at intro scene");
-            StartCoroutine(IntroWait());
-        }
-    }
-
-    IEnumerator IntroWait()
+    public void ChangeScene()
     {
-        Debug.Log("intro scene loaded");
-        yield return new WaitForSeconds(introWaitTime);
         SceneManager.LoadScene("TutorialScene");
     }
 }

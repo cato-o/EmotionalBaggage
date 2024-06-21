@@ -87,6 +87,7 @@ namespace EmotionalBaggage.Player
         private bool isDying = false;
 
         public AudioSource jumpSound;
+        public AudioSource dizzySound;
         public AudioSource duckSound;
 
         [SerializeField]
@@ -101,6 +102,9 @@ namespace EmotionalBaggage.Player
         private Vector3? lastTurnTilePosition = null;
         private bool isHorizHeld;
         private Vector3 horizontalMove;
+
+        private float lastRampTime = 0f; 
+        private float rampProtectionTime = 2f;
 
         private void Awake() {
             gameController = GameObject.Find("GameController").GetComponent<GameController>();
@@ -227,6 +231,11 @@ namespace EmotionalBaggage.Player
         private IEnumerator Slide()
         {
             sliding = true;
+
+             // Adjust the duckSound playback speed based on the playerSpeed
+            duckSound.pitch = playerSpeed/initialPlayerSpeed; // adjust the pitch to match the speed
+            duckSound.Play(); // play the sound
+
             // Shrink the collider
             Vector3 originalControllerCenter = controller.center;
             Vector3 newControllerCenter = originalControllerCenter;
@@ -236,6 +245,7 @@ namespace EmotionalBaggage.Player
 
             // Play the sliding animation
             animator.Play(slidingAnimationId);
+            
             yield return new WaitForSeconds(slideAnimationClip.length / animator.speed);
             // Set the character controller back to normal after sliding
             controller.height *= 2;
@@ -267,8 +277,11 @@ namespace EmotionalBaggage.Player
             {
                 if (!isFalling)
                 {
-                    isFalling = true;
-                    fallTimer = 0f;
+                    if (Time.time - lastRampTime > rampProtectionTime)
+                    {
+                        isFalling = true;
+                        fallTimer = 0f;
+                    }
                 }
                 else
                 {
@@ -367,6 +380,7 @@ namespace EmotionalBaggage.Player
                     beforeVelocity = playerVelocity;
                     transform.Rotate(30f, 0f, 0f, Space.Self);
                     worldScene.transform.Rotate(-30f, 0f, 0f, Space.Self);
+                    lastRampTime = Time.time;
                     
                 }
                 playerVelocity = beforeVelocity;
@@ -406,6 +420,8 @@ namespace EmotionalBaggage.Player
             if (!isFalling)
             {
                 isDying = true; // Set the flag to indicate dying animation has started
+                dizzySound.pitch = playerSpeed / initialPlayerSpeed;
+                dizzySound.Play();
                 animator.Play(dyingAnimationId);
                 yield return new WaitForSeconds(dieAnimationClip.length);
             }
@@ -416,10 +432,25 @@ namespace EmotionalBaggage.Player
         
         private IEnumerator WaitUntilGroundedThenDie()
         {
-            yield return new WaitUntil(() => isGrounded());
+            float startTime = Time.time;
+            float maxWaitTime = 2f;
+
+            while (!isGrounded())
+            {
+                if (Time.time - startTime > maxWaitTime)
+                {
+                    // If the player isn't grounded within the max wait time, trigger game over
+                    GameOver();
+                    yield break;
+                }
+                yield return null;
+            }
+
+            // If the player becomes grounded within the max wait time, trigger game over
             GameOver();
         }
 
+        // This method is called when the player collides with an obstacle
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (sliding)

@@ -56,6 +56,17 @@
                 },
                 {
                     "name": "",
+                    "id": "420048c6-b3c8-4267-9648-fd2a2960bee8",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "70f5b713-f0bc-41ce-a5c4-27807ef4719b",
                     "path": "<Keyboard>/s",
                     "interactions": "",
