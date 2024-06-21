@@ -388,11 +388,6 @@ namespace EmotionalBaggage.Player
             {
                 return true;
             }
-            // bypass ramp grounding inactivation
-            if (Time.time - lastRampTime <= rampProtectionTime)
-            {
-                return true;
-            }
             return false;
         }
 
