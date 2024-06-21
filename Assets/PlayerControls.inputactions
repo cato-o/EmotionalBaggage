@@ -67,6 +67,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7cbeea48-8061-48f5-ac86-69642d004cf6",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "70f5b713-f0bc-41ce-a5c4-27807ef4719b",
                     "path": "<Keyboard>/s",
                     "interactions": "",

@@ -8096,7 +8096,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Spacebar
 
-    w'
+    w
+
+    Up'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45e2cbed8039e40b1bfd87f8fed9580c, type: 2}
   m_sharedMaterial: {fileID: -1678681013329442426, guid: 45e2cbed8039e40b1bfd87f8fed9580c, type: 2}
