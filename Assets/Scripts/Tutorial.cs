@@ -31,6 +31,15 @@ public class Tutorial : MonoBehaviour
         instructions.Add("Slide", slideInfo);
         instructions.Add("TutorialEnd", tutorialEnd);
     }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            //StartCoroutine(StartGame());
+            StartGame();
+        }
+    }
     
     private void OnTriggerEnter(Collider other)
     {
@@ -43,7 +52,8 @@ public class Tutorial : MonoBehaviour
         }
         else if (other.tag == "SwitchScene")
         {
-            StartCoroutine(StartGame());
+            //StartCoroutine(StartGame());
+            StartGame();
         }
     }
 
@@ -55,10 +65,11 @@ public class Tutorial : MonoBehaviour
         }
     }
 
-    IEnumerator StartGame()
+    //IEnumerator StartGame()
+    public void StartGame()
     {
         Debug.Log("tutorial scene starting");
-        yield return new WaitForSeconds(sceneWaitTime);
+        //yield return new WaitForSeconds(sceneWaitTime);
         SceneManager.LoadScene("GameScene");
     }
 }
